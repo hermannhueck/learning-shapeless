@@ -24,10 +24,6 @@ lazy val root = (project in file(".")).
       
       libraryDependencies ++= Seq(
         Libraries.shapeless,
-        Libraries.fs2Core,
-        Libraries.fs2Io,
-        Libraries.fs2ReactiveStreams,
-        // Libraries.monixEval,
       ),
       
       initialCommands := s"""

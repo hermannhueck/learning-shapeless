@@ -1,15 +1,5 @@
-*.jar
-*.war
-*.ear
-*.tar.gz
-*.tgz
-*.rar
-*.log
 
-logs/
 target/
-dist/
-bin/
 
 /.idea
 .DS_Store
