@@ -1,7 +1,6 @@
 package chap04
 
 import shapeless.ops.hlist.{IsHCons, Last}
-import shapeless.ops.hlist.Last.Aux
 import shapeless.{::, Generic, HList, HNil, the}
 
 object Chap043ChainingDependentFunctions extends App {
@@ -81,6 +80,7 @@ object Chap043ChainingDependentFunctions extends App {
 
   val wrappedInt = getWrappedValue(Wrapper(42))
   println(wrappedInt)
+
 
   println("==========\n")
 }

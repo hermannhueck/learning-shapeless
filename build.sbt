@@ -7,7 +7,13 @@ lazy val root = (project in file(".")).
     inThisBuild(List(
       
       version := "1.0.0",
-      scalaVersion := "2.13.0-RC1",
+
+      //scalaOrganization := "org.typelevel",
+      //scalaVersion := "2.12.4-bin-typelevel-4"
+      //scalaVersion := "2.13.0-M2-bin-typelevel-4"
+
+      scalaVersion := "2.12.8",
+      // scalaVersion := "2.13.0-RC1",
       
       addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.10"),
       
@@ -20,6 +26,7 @@ lazy val root = (project in file(".")).
         //"-Ypartial-unification",  // allow the compiler to unify type constructors of different arities
         //"-Xlint",                 // enable handy linter warnings
         //"-Xfatal-warnings",        // turn compiler warnings into errors
+       "-Xexperimental",
       ),
       
       libraryDependencies ++= Seq(
