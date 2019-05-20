@@ -4,7 +4,7 @@ object Dependencies {
 
   object Versions {
 
-    val shapelessVersion = "2.3.+"
+    val shapelessVersion = "2.3.3"
   }
 
   object Libraries {
