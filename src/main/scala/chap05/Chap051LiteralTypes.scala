@@ -33,16 +33,18 @@ object Chap051LiteralTypes extends App {
   // x+1
   // res3: Int = 43
 
-/*
+
+  // We can use narrow on any literal in Scala:
   1.narrow
   // res4: Int(1) = 1
   true.narrow
   // res5: Boolean(true) = true
   "hello".narrow
-  // res9: String("hello") = hello
+  // res6: String("hello") = hello
   // and so on...
-*/
 
+
+  // However, we can’t use it on compound expressions:
   // math.sqrt(4).narrow
   // <console>:17: error:
   // Expression scala.math.`package`.sqrt(4.0) does not evaluate to a constant or a stable reference value
@@ -51,6 +53,12 @@ object Chap051LiteralTypes extends App {
   // <console>:17: error: value narrow is not a member of Double
   // math.sqrt(4.0).narrow
   //                ^
+
+
+  // Literal types in Scala 2.13:
+  val theAnswer0: 42 = 42
+  lazy val theAnswer1: 42 = 42
+  var theAnswer2: 42 = 42
 
 
   println("==========\n")
