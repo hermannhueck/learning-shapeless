@@ -1,4 +1,4 @@
-package ch02
+package chap02
 
 object Chap021Adts extends App {
 
