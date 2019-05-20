@@ -1,6 +1,6 @@
 package chap03
 
-import chap03.Chap032DerivingInstancesForProducts.CsvEncoder
+import chap03.Chap032aDerivingInstancesForProductsSpecific.CsvEncoder
 import shapeless.Generic.Aux
 import shapeless.{:+:, ::, CNil, Coproduct, Generic, HList, HNil, Inl, Inr, Lazy}
 
@@ -13,6 +13,11 @@ object Chap034DerivingInstancesForRecursiveTypes extends App {
   trait CsvEncoder[A] {
     def encode(value: A): List[String]
   }
+
+  def writeCsv[A](values: List[A])(implicit encoder: CsvEncoder[A]): String =
+    values
+      .map { value => encoder.encode(value).mkString(",") }
+      .mkString("\n")
 
   object CsvEncoder {
 
@@ -41,12 +46,6 @@ object Chap034DerivingInstancesForRecursiveTypes extends App {
     implicit val hnilEncoder: CsvEncoder[HNil] =
       instance(hnil => Nil)
 
-/*
-    implicit def hlistEncoder[H, T <: HList](implicit hEncoder: CsvEncoder[H], tEncoder: CsvEncoder[T]): CsvEncoder[H :: T] =
-      instance { case h :: t =>
-          hEncoder.encode(h) ++ tEncoder.encode(t)
-      }
-*/
     // needs Lazy for recursive structures like Tree
     implicit def hlistEncoder[H, T <: HList](
                                               implicit
@@ -60,12 +59,6 @@ object Chap034DerivingInstancesForRecursiveTypes extends App {
     implicit val cnilEncoder: CsvEncoder[CNil] =
       instance(cnil => throw new Exception("Inconceivable!"))
 
-/*
-    implicit def coproductEncoder[H, T <: Coproduct](implicit hEncoder: CsvEncoder[H], tEncoder: CsvEncoder[T]): CsvEncoder[H :+: T] = instance {
-      case Inl(h) => hEncoder.encode(h)
-      case Inr(t) => tEncoder.encode(t)
-    }
-*/
     // needs Lazy for recursive structures like Tree
     implicit def coproductEncoder[H, T <: Coproduct](
                                                       implicit
@@ -76,10 +69,6 @@ object Chap034DerivingInstancesForRecursiveTypes extends App {
       case Inr(t) => tEncoder.encode(t)
     }
 
-/*
-    implicit def genericEncoder[A, R](implicit gen: Generic.Aux[A, R], encoder: CsvEncoder[R]): CsvEncoder[A] =
-      instance(a => encoder.encode(gen.to(a)))
-*/
     // needs Lazy for recursive structures like Tree
     implicit def genericEncoder[A, R](
                                        implicit
@@ -90,11 +79,6 @@ object Chap034DerivingInstancesForRecursiveTypes extends App {
     }
   }
 
-  def writeCsv[A](values: List[A])(implicit encoder: CsvEncoder[A]): String =
-    values
-      .map { value => encoder.encode(value).mkString(",") }
-      .mkString("\n")
-
 
   sealed trait Tree[A]
   case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
@@ -102,6 +86,7 @@ object Chap034DerivingInstancesForRecursiveTypes extends App {
 
   println("\n----- 3.4.1 Implicit divergence -----")
 
+  // without Lazy:
   // CsvEncoder[Tree[Int]]
   // <console>:23: error: could not find implicit value for parameter enc: CsvEncoder[Tree[Int]]
   //        CsvEncoder[Tree[Int]]

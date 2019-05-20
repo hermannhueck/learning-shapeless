@@ -1,18 +1,22 @@
 package chap03
 
 import shapeless.Generic.Aux
-import shapeless.{::, Generic, HList, HNil}
-import shapeless.{Coproduct, :+:, CNil, Inl, Inr}
+import shapeless.{:+:, ::, CNil, Coproduct, Generic, HList, HNil, Inl, Inr}
 
-object Chap032DerivingInstancesForProducts extends App {
+object Chap032bDerivingInstancesForProductsGeneric extends App {
 
-  println("\n===== 3.2 Deriving instance for products =====")
+  println("\n===== 3.2 Deriving instances for products (generic instances) =====")
 
   // The type class: a trait with at least one type parameter:
   // Turn a value of type A into a row of cells in a CSV file:
   trait CsvEncoder[A] {
     def encode(value: A): List[String]
   }
+
+  def writeCsv[A](values: List[A])(implicit encoder: CsvEncoder[A]): String =
+    values
+      .map { value => encoder.encode(value).mkString(",") }
+      .mkString("\n")
 
   object CsvEncoder {
 
@@ -46,11 +50,6 @@ object Chap032DerivingInstancesForProducts extends App {
     // Taken together, these five instances allow us to summon CsvEncoders for any HList involving Strings, Ints, and Booleans.
   }
 
-  def writeCsv[A](values: List[A])(implicit encoder: CsvEncoder[A]): String =
-    values
-      .map { value => encoder.encode(value).mkString(",") }
-      .mkString("\n")
-
 
   println("\n----- 3.2.1 Instances for HLists -----")
 
@@ -65,31 +64,13 @@ object Chap032DerivingInstancesForProducts extends App {
 
   case class IceCream(name: String, numCherries: Int, inCone: Boolean)
 
-  implicit val iceCreamEncoder: CsvEncoder[IceCream] = {
-    val gen: Aux[IceCream, String :: Int :: Boolean :: HNil] = Generic[IceCream]
-    val enc: CsvEncoder[String :: Int :: Boolean :: HNil] = CsvEncoder[gen.Repr]
-    CsvEncoder.instance(iceCream => enc.encode(gen.to(iceCream)))
-  }
-
   val iceCreams: List[IceCream] = List(
     IceCream("Sundae", 1, false),
     IceCream("Cornetto", 0, true),
     IceCream("Banana Split", 0, false)
   )
 
-  val encodedIceCreams: String = writeCsv(iceCreams)
-  println(encodedIceCreams)
-
-
-  println
-
   case class Employee(name: String, number: Int, manager: Boolean)
-
-  implicit val employeeEncoder: CsvEncoder[Employee] = {
-    val gen = Generic[Employee]
-    val enc = CsvEncoder[gen.Repr]
-    CsvEncoder.instance(employee => enc.encode(gen.to(employee)))
-  }
 
   val employees: List[Employee] = List(
     Employee("Bill", 1, true),
@@ -97,24 +78,8 @@ object Chap032DerivingInstancesForProducts extends App {
     Employee("Milton", 3, false)
   )
 
-  val encodedEmployees: String = writeCsv(employees)
-  println(encodedEmployees)
+  val employeesWithIceCrams: List[(Employee, IceCream)] = employees zip iceCreams
 
-
-
-  println
-
-  implicit def pairEncoder[A, B](implicit aEncoder: CsvEncoder[A], bEncoder: CsvEncoder[B]): CsvEncoder[(A, B)] =
-    CsvEncoder.instance {
-      case (a, b) => aEncoder.encode(a) ++ bEncoder.encode(b)
-    }
-
-  val pairs: List[(Employee, IceCream)] = employees zip iceCreams
-  val encodedPairs: String = writeCsv(pairs)
-  println(encodedPairs)
-
-
-  println("\n----- Same thing in a generic way -----")
 
 /*
   implicit def genericEncoder[A](
@@ -157,10 +122,18 @@ object Chap032DerivingInstancesForProducts extends App {
   ) // is the same as:
   println
   println(writeCsv(iceCreams))
+
   println
   println(writeCsv(employees))
+
+
+  implicit def pairEncoder[A, B](implicit aEncoder: CsvEncoder[A], bEncoder: CsvEncoder[B]): CsvEncoder[(A, B)] =
+    CsvEncoder.instance {
+      case (a, b) => aEncoder.encode(a) ++ bEncoder.encode(b)
+    }
+
   println
-  println(writeCsv(employees zip iceCreams))
+  println(writeCsv(employeesWithIceCrams))
 
 
   println("\n----- 3.2.3 So what are the downsides? -----")
@@ -185,36 +158,6 @@ object Chap032DerivingInstancesForProducts extends App {
   //         ^
 
   // needs an implicit CsvEncoder for java.util.Date
-
-
-  println("\n----- 3.3 Deriving instances for coproducts -----")
-
-  sealed trait Shape
-  final case class Rectangle(width: Double, height: Double) extends Shape
-  final case class Circle(radius: Double) extends Shape
-
-  implicit val cnilEncoder: CsvEncoder[CNil] =
-    CsvEncoder.instance(cnil => throw new Exception("Inconceivable!"))
-
-  implicit def coproductEncoder[H, T <: Coproduct](
-                                                    implicit
-                                                    hEncoder: CsvEncoder[H],
-                                                    tEncoder: CsvEncoder[T]
-                                                  ): CsvEncoder[H :+: T] = CsvEncoder.instance {
-    case Inl(h) => hEncoder.encode(h)
-    case Inr(t) => tEncoder.encode(t)
-  }
-
-  implicit val doubleEncoder: CsvEncoder[Double] =
-    CsvEncoder.instance(d => List(d.toString))
-
-  val shapes: List[Shape] = List(
-    Rectangle(3.0, 4.0),
-    Circle(1.0)
-  )
-
-  println(writeCsv(shapes))
-
 
 
   println("==========\n")
