@@ -6,18 +6,21 @@ object Chap064RecordOps extends App {
 
   println("\n===== 6.4 Record ops =====")
 
+
   case class IceCream(name: String, numCherries: Int, inCone: Boolean)
 
   val ic =
     LabelledGeneric[IceCream]
       .to(IceCream("Sundae", 1, false))
-  // sundae:
+  // ic:
   //    String with shapeless.labelled.KeyTag[Symbol with shapeless.tag.Tagged[String("name")],String] ::
   //    Int with shapeless.labelled.KeyTag[Symbol with shapeless.tag.Tagged[String(" numCherries")],Int] ::
   //    Boolean with shapeless.labelled.KeyTag[Symbol with shapeless.tag.Tagged[String("inCone")],Boolean] ::
-  //    shapeless.HNil = Sundae :: 1 :: false :: HNil
+  //    shapeless.HNil
+  //    = Sundae :: 1 :: false :: HNil
 
   import shapeless.record._
+
 
   println("\n----- 6.4.1 Selecting fields -----")
 
@@ -46,6 +49,7 @@ object Chap064RecordOps extends App {
   // ic.get(Symbol("nOmCherries"))
   //       ^
 
+
   println("\n----- 6.4.2 Updating and removing fields -----")
 
   // val updated = ic.updated('numCherries, 3) // deprecated
@@ -60,13 +64,13 @@ object Chap064RecordOps extends App {
   val updated2: String :: Int :: Boolean :: HNil = ic.updateWith(Symbol("name"))("MASSIVE " + _)
   println(updated2) //=> MASSIVE Sundae :: 1 :: false :: HNil
 
+
   println("\n----- 6.4.3 Converting to a regular Map -----")
 
   val map = ic.toMap
   // map: Map[Symbol with shapeless.tag.Tagged[_ >: String("inCone") with String("numCherries") with String("name") <: String],Any]
   //          = Map('inCone -> false, 'numCherries -> 1, 'name -> Sundae)
   println(map)
-
 
 
   println("==========\n")

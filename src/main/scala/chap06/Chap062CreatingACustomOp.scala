@@ -4,6 +4,8 @@ object Chap062CreatingACustomOp extends App {
 
   println("\n===== 6.2 Creating a custom op (the “lemma” pattern) =====")
 
+  println("\n----- Example: Penultimate (for HList) -----")
+
 
   import shapeless._
 
@@ -48,13 +50,17 @@ object Chap062CreatingACustomOp extends App {
 
 
   implicit class PenultimateOps[A](a: A) {
+
     def penultimate(implicit inst: Penultimate[A]): inst.Out =
       inst.apply(a)
   }
+
   val blPenultimate2 = bigList.penultimate
   // blPenultimate2: Boolean = true
   println(blPenultimate2)
 
+
+  println("\n----- Example: Penultimate (for Product, i.e. case class) -----")
 
   implicit def genericPenultimate[A, R, O](
                                             implicit
@@ -68,6 +74,7 @@ object Chap062CreatingACustomOp extends App {
     }
 
   case class IceCream(name: String, numCherries: Int, inCone: Boolean)
+
   val icPenultimate = IceCream("Sundae", 1, false).penultimate
   // icPenultimate: Int = 1
   println(icPenultimate)

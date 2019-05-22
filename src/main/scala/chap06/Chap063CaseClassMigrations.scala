@@ -21,6 +21,7 @@ object Chap063CaseClassMigrations extends App {
 
 
   // Ideally we’d like to be able to write code like this:
+  //
   // IceCreamV1("Sundae", 1, false).migrateTo[IceCreamV2a]
 
 
@@ -42,14 +43,20 @@ object Chap063CaseClassMigrations extends App {
   {
     println("----- 6.3.2 Step 1. Removing fields -----")
 
-    implicit def genericMigration[A, B, ARepr <: HList, BRepr <: HList](implicit
-                                                                        aGen: LabelledGeneric.Aux[A, ARepr],
-                                                                        bGen: LabelledGeneric.Aux[B, BRepr],
-                                                                        inter: hlist.Intersection.Aux[ARepr, BRepr, BRepr]): Migration[A, B] =
+    implicit def genericMigration[
+      A, B,
+      ARepr <: HList,
+      BRepr <: HList
+    ](
+      implicit
+      aGen: LabelledGeneric.Aux[A, ARepr],
+      bGen: LabelledGeneric.Aux[B, BRepr],
+      intersection: hlist.Intersection.Aux[ARepr, BRepr, BRepr]
+    ): Migration[A, B] =
       new Migration[A, B] {
         def apply(a: A): B = {
           val aRepr = aGen.to(a)
-          val bRepr = inter.apply(aRepr)
+          val bRepr = intersection.apply(aRepr)
           val b = bGen.from(bRepr)
           b
         }
@@ -72,12 +79,13 @@ object Chap063CaseClassMigrations extends App {
        implicit
        aGen: LabelledGeneric.Aux[A, ARepr],
        bGen: LabelledGeneric.Aux[B, BRepr],
-       inter: hlist.Intersection.Aux[ARepr, BRepr, Unaligned], align: hlist.Align[Unaligned, BRepr]
+       intersection: hlist.Intersection.Aux[ARepr, BRepr, Unaligned],
+       align: hlist.Align[Unaligned, BRepr]
      ): Migration[A, B] =
       new Migration[A, B] {
         def apply(a: A): B = {
           val aRepr = aGen.to(a)
-          val unaligned = inter.apply(aRepr)
+          val unaligned = intersection.apply(aRepr)
           val bRepr = align.apply(unaligned)
           val b = bGen.from(bRepr)
           b
@@ -108,6 +116,8 @@ object Chap063CaseClassMigrations extends App {
     import cats.instances.all._
     import shapeless.labelled.{field, FieldType}
 
+    // we work with Monoids just to get the 'empty' value
+    // we don't need the Monoid.combine
     def createMonoid[A](zero: A)(add: (A, A) => A): Monoid[A] =
       new Monoid[A] {
         def empty: A = zero
@@ -127,9 +137,17 @@ object Chap063CaseClassMigrations extends App {
           field[K](hMonoid.value.combine(x.head, y.head)) :: tMonoid.combine(x.tail, y.tail)
       }
 
+    // Here’s the full list of steps:
+    //    1. use LabelledGeneric to convert A to its generic representa􏰀on
+    //    2. use Intersection to calculate an HList of fields common to A and B
+    //    3. calculate the types off ields that appear in B but not in A
+    //    4. use Monoid to calculate a default value of the type from step 3
+    //    5. append the common fields from step 2 to the new field from step 4
+    //    6. use Align to reorder the fields from step 5 in the same order as B
+    //    7. use LabelledGeneric to convert the output of step 6 to B
+
     implicit def genericMigration[
-      A,
-      B,
+      A, B,
       ARepr <: HList,
       BRepr <: HList,
       Common <: HList,
@@ -139,14 +157,14 @@ object Chap063CaseClassMigrations extends App {
        implicit
        aGen : LabelledGeneric.Aux[A, ARepr],
        bGen : LabelledGeneric.Aux[B, BRepr],
-       inter : hlist.Intersection.Aux[ARepr, BRepr, Common], diff : hlist.Diff.Aux[BRepr, Common, Added],
+       intersection : hlist.Intersection.Aux[ARepr, BRepr, Common], diff : hlist.Diff.Aux[BRepr, Common, Added],
        monoid : Monoid[Added],
        prepend : hlist.Prepend.Aux[Added, Common, Unaligned], align : hlist.Align[Unaligned, BRepr]
      ): Migration[A, B] =
       new Migration[A, B] {
         def apply(a: A): B = {
           val aRepr = aGen.to(a)
-          val common = inter(aRepr)
+          val common = intersection(aRepr)
           val empty = monoid.empty
           val unaligned = prepend(empty, common)
           val bRepr = align(unaligned)
