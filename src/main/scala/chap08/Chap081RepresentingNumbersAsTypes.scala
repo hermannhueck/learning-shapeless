@@ -21,14 +21,16 @@ object Chap081RepresentingNumbersAsTypes extends App {
   Nat._3
   // etc...
 
-  // Nat has no run􏰀me seman􏰀cs. We have to use the ToInt type class to convert a Nat to a run􏰀me Int:
+  // Nat has no runti􏰀me semanti􏰀cs. We have to use the ToInt type class to convert a Nat to a runti􏰀me Int:
 
   import shapeless.ops.nat.ToInt
 
   val toInt: ToInt[Two] = ToInt[Two]
+
   val two = toInt.apply()
   // two: Int = 2
   println(two)
+
   val two2 = toInt()
   // two2: Int = 2
   println(two2)

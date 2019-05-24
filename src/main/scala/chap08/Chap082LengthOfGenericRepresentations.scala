@@ -5,7 +5,7 @@ import shapeless.ops.{hlist, coproduct, nat}
 
 object Chap082LengthOfGenericRepresentations extends App {
 
-  println("\n===== 8.2 Length of generic representa\uDBFF\uDC00ons =====")
+  println("\n===== 8.2 Length of generic representations =====")
 
 
   val hlistLength = hlist.Length[String :: Int :: Boolean :: HNil]
@@ -29,6 +29,7 @@ object Chap082LengthOfGenericRepresentations extends App {
   println(cpl)
 
 
+  println("----- sizeOf[Product] -----")
   trait SizeOf[A] {
     def value: Int
   }
@@ -47,7 +48,7 @@ object Chap082LengthOfGenericRepresentations extends App {
                                                        sizeToInt: nat.ToInt[N]
                                                      ): SizeOf[A] =
     new SizeOf[A] {
-      val value = sizeToInt.apply()
+      val value: Int = sizeToInt.apply()
     }
 
   case class IceCream(name: String, numCherries: Int, inCone: Boolean)

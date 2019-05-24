@@ -56,7 +56,11 @@ object Chap083RandomValueGenerator extends App {
                                     gen: Generic.Aux[A, R],
                                     random: Lazy[Random[R]]
                                   ): Random[A] =
-    createRandom(() => gen.from(random.value.get))
+    createRandom(() => {
+      val randomValue: R = random.value.get
+      val a: A = gen.from(randomValue)
+      a
+    })
 
   implicit val hnilRandom: Random[HNil] =
     createRandom(() => HNil)
@@ -66,7 +70,12 @@ object Chap083RandomValueGenerator extends App {
                                            hRandom: Lazy[Random[H]],
                                            tRandom: Random[T]
                                          ): Random[H :: T] =
-    createRandom(() => hRandom.value.get :: tRandom.get)
+    createRandom { () =>
+      val randomHead: H = hRandom.value.get
+      val randomTail: T = tRandom.get
+      val hlist: H :: T = randomHead :: randomTail
+      hlist
+    }
 
 
   case class Cell(col: Char, row: Int)
@@ -100,13 +109,14 @@ object Chap083RandomValueGenerator extends App {
                                                      tRandom: Random[T]
                                                    ): Random[H :+: T] =
       createRandom { () =>
-        val chooseH = scala.util.Random.nextDouble < 0.5
-        if (chooseH) Inl(hRandom.value.get) else Inr(tRandom.get)
+        val chooseH: Boolean = scala.util.Random.nextDouble < 0.5
+        val res: H :+: T = if (chooseH) Inl(hRandom.value.get) else Inr(tRandom.get)
+        res
       }
 
     // There problems with this implementation lie in the 50/50 choice in calculating chooseH.
 
-    // Our coproduct instances will throw excep􏰀ons 6.75% of the 􏰀me!
+    // !!!!!!!!!!!!!!!!! Our coproduct instances will throw excep􏰀ons 6.75% of the ti􏰀me!
 
     // for (i <- 1 to 100) random[Light]
     // java.lang.Exception: Inconceivable!
@@ -130,9 +140,10 @@ object Chap083RandomValueGenerator extends App {
                                                                tLengthAsInt: ToInt[L]
                                                              ): Random[H :+: T] = {
       createRandom { () =>
-        val length = 1 + tLengthAsInt()
-        val chooseH = scala.util.Random.nextDouble < (1.0 / length)
-        if(chooseH) Inl(hRandom.value.get) else Inr(tRandom.get)
+        val length: Int = 1 + tLengthAsInt()
+        val chooseH: Boolean = scala.util.Random.nextDouble < (1.0 / length)
+        val res: H :+: T = if(chooseH) Inl(hRandom.value.get) else Inr(tRandom.get)
+        res
       }
     }
 
