@@ -35,8 +35,11 @@ lazy val root = (project in file(".")).
       
       initialCommands := s"""
         import shapeless._
-        import scala.language.higherKinds
-      """ // initialize REPL
+        import shapeless.labelled._
+        import shapeless.ops._
+        import shapeless.syntax._
+        println
+        """ // initialize REPL
     ))
   )
 
