@@ -1,47 +1,70 @@
 import Dependencies._
+import sbt.url
 
-name := "learning-shapeless"
+val projectName = "learning-shapeless"
+val githubId = "hermannhueck"
+val githubHome = s"https://github.com/$githubId"
+val projectUrl = s"$githubHome/$projectName"
 
-lazy val root = (project in file(".")).
-  settings(
-    inThisBuild(List(
-      
-      version := "1.0.0",
+inThisBuild(
+  Seq(
+    organization := "io.hueck",
+    organizationName := "Hueck",
+    description := "This project contains the code I copied and produced while learning shapeless",
+    homepage := Some(url(projectUrl)),
+    startYear := Some(2019),
+    licenses := Vector(("MIT", url("https://opensource.org/licenses/MIT"))),
+    scmInfo := Some(ScmInfo(url(projectUrl), s"$projectUrl.git")),
+    developers := List(
+      Developer(id = githubId, name = "Hermann Hueck", email = "", url = url(githubHome))
+    ),
 
-      //scalaOrganization := "org.typelevel",
-      //scalaVersion := "2.12.4-bin-typelevel-4"
-      //scalaVersion := "2.13.0-M2-bin-typelevel-4"
+    version := "0.1.0",
 
-      // scalaVersion := "2.12.8",
-      scalaVersion := "2.13.0-RC2",
-      
-      // addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.11"),
-      
-      scalacOptions ++= Seq(
-        "-encoding", "UTF-8",     // source files are in UTF-8
-        "-deprecation",           // warn about use of deprecated APIs
-        "-unchecked",             // warn about unchecked type parameters
-        "-feature",               // warn about misused language features
-        "-language:higherKinds",  // suppress warnings when using higher kinded types
-        //"-Ypartial-unification",  // allow the compiler to unify type constructors of different arities
-        //"-Xlint",                 // enable handy linter warnings
-        //"-Xfatal-warnings",        // turn compiler warnings into errors
-        //"-Xexperimental",
-      ),
-      
-      libraryDependencies ++= Seq(
-        Libraries.shapeless,
-      ),
-      
-      initialCommands := s"""
+    //scalaOrganization := "org.typelevel",
+    //scalaVersion := "2.12.4-bin-typelevel-4"
+    //scalaVersion := "2.13.0-M2-bin-typelevel-4"
+
+    // scalaVersion := "2.12.8",
+    scalaVersion := "2.13.0-RC2",
+
+    scalacOptions ++= Seq(
+      "-encoding", "UTF-8", // source files are in UTF-8
+      "-deprecation", // warn about use of deprecated APIs
+      "-unchecked", // warn about unchecked type parameters
+      "-feature", // warn about misused language features
+      //"-language:higherKinds",  // suppress warnings when using higher kinded types
+      //"-Ypartial-unification",  // (removed in scala 2.13) allow the compiler to unify type constructors of different arities
+      //"-Xlint",                 // enable handy linter warnings
+      //"-Xfatal-warnings",       // turn compiler warnings into errors
+    ),
+
+    initialCommands := s"""
         import shapeless._
         import shapeless.labelled._
         import shapeless.ops._
         import shapeless.syntax._
         println
         """ // initialize REPL
-    ))
   )
+)
+
+lazy val root = (project in file("."))
+  .aggregate(gurnell)
+  .settings(
+    name := projectName,
+  )
+
+lazy val gurnell = (project in file("gurnell"))
+  .settings(
+    name := "gurnell",
+    description := "Code from Dave Gurnells book: The Type Astronaut's Guide to Shapeless",
+    libraryDependencies ++= Seq(
+      Libraries.shapeless,
+    ),
+  )
+
+addCommandAlias("grm", "gurnell/runMain")
 
 /*
 libraryDependencies += {
