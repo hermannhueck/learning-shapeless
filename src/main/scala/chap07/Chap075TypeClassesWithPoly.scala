@@ -34,8 +34,7 @@ object Chap075TypeClassesWithPoly extends App {
 
   implicit class ProductMapperOps[A](a: A) {
     class Builder[B] {
-      def apply[P <: Poly](poly: P)
-                          (implicit pm: ProductMapper[A, B, P]): B =
+      def apply[P <: Poly](poly: P)(implicit pm: ProductMapper[A, B, P]): B =
         pm.apply(a)
     }
     def mapTo[B]: Builder[B] = new Builder[B]
