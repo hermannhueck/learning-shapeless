@@ -112,27 +112,40 @@ object Chap063CaseClassMigrations extends App {
   {
     println("----- 6.3.4 Step 3. Adding fields -----")
 
-    import cats.Monoid
-    import cats.instances.all._
-    import shapeless.labelled.{field, FieldType}
-
     // we work with Monoids just to get the 'empty' value
     // we don't need the Monoid.combine
-    def createMonoid[A](zero: A)(add: (A, A) => A): Monoid[A] =
-      new Monoid[A] {
-        def empty: A = zero
-        def combine(x: A, y: A): A = add(x, y)
-      }
+
+    trait Monoid[A] {
+      def empty: A
+      def combine(x: A, y: A): A
+    }
+
+    object Monoid {
+
+      def monoidInstance[A](zero: A)(f: (A, A) => A): Monoid[A] =
+        new Monoid[A] {
+          def empty: A = zero
+          def combine(x: A, y: A): A = f(x, y)
+        }
+
+      implicit val intMonoid: Monoid[Int] = monoidInstance[Int](0)(_ + _)
+
+      // We only need a Monoid instance for Int as we add default Int value in ...
+      // case class IceCreamV2c(name: String, inCone: Boolean, numCherries: Int, numWaffles: Int)
+    }
+
+    import Monoid._
+    import shapeless.labelled.{field, FieldType}
 
     implicit val hnilMonoid: Monoid[HNil] =
-      createMonoid[HNil](HNil)((x, y) => HNil)
+      monoidInstance[HNil](HNil)((x, y) => HNil)
 
     implicit def emptyHList[K <: Symbol, H, T <: HList](
                                                          implicit
                                                          hMonoid: Lazy[Monoid[H]],
                                                          tMonoid: Monoid[T]
                                                        ): Monoid[FieldType[K, H] :: T] =
-      createMonoid(field[K](hMonoid.value.empty) :: tMonoid.empty) {
+      monoidInstance[FieldType[K, H] :: T](field[K](hMonoid.value.empty) :: tMonoid.empty) {
         (x, y) =>
           field[K](hMonoid.value.combine(x.head, y.head)) :: tMonoid.combine(x.tail, y.tail)
       }
