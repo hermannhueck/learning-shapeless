@@ -10,4 +10,4 @@ This repo contains the code snippets I copied from Dave Gurnell's book:
 - Shapeless Home<br/>
   https://github.com/milessabin/shapeless
 - Shapless API Docs<br/>
-  https://javadoc.io/doc/com.chuusai/shapeless_2.13.0-M5/2.3.3
+  https://javadoc.io/doc/com.chuusai/shapeless_2.13.0-RC2/2.3.3
