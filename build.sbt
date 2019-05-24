@@ -15,7 +15,7 @@ lazy val root = (project in file(".")).
       // scalaVersion := "2.12.8",
       scalaVersion := "2.13.0-RC1",
       
-      addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.10"),
+      // addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.11"),
       
       scalacOptions ++= Seq(
         "-encoding", "UTF-8",     // source files are in UTF-8
