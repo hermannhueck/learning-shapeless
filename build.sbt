@@ -13,7 +13,7 @@ lazy val root = (project in file(".")).
       //scalaVersion := "2.13.0-M2-bin-typelevel-4"
 
       // scalaVersion := "2.12.8",
-      scalaVersion := "2.13.0-RC1",
+      scalaVersion := "2.13.0-RC2",
       
       // addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.11"),
       
