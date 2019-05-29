@@ -39,13 +39,17 @@ inThisBuild(
       //"-Xfatal-warnings",       // turn compiler warnings into errors
     ),
 
+    libraryDependencies ++= Seq(
+      Libraries.shapeless,
+    ),
+
     initialCommands := s"""
         import shapeless._
         import shapeless.labelled._
         import shapeless.ops._
         import shapeless.syntax._
         println
-        """ // initialize REPL
+        """.stripMargin // initialize REPL
   )
 )
 
@@ -59,27 +63,18 @@ lazy val gurnell = (project in file("gurnell"))
   .settings(
     name := "gurnell",
     description := "Code from Dave Gurnells book: The Type Astronaut's Guide to Shapeless",
-    libraryDependencies ++= Seq(
-      Libraries.shapeless,
-    ),
   )
 
 lazy val wiki = (project in file("shapeless-wiki"))
   .settings(
     name := "shapeless-wiki",
     description := "Code snippets from the Shapeless wiki: https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0",
-    libraryDependencies ++= Seq(
-      Libraries.shapeless,
-    ),
   )
 
 lazy val blog = (project in file("miles-blog"))
   .settings(
     name := "miles-blog",
     description := "Code snippets from Miles Sabin's blog: http://milessabin.com/blog",
-    libraryDependencies ++= Seq(
-      Libraries.shapeless,
-    ),
   )
 
 addCommandAlias("grm", "gurnell/runMain")
