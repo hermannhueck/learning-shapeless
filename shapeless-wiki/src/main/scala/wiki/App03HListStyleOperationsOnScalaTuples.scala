@@ -1,79 +1,95 @@
 package wiki
 
 import shapeless._
-import shapeless.poly._
 
-object App03 extends App {
+object App03HListStyleOperationsOnScalaTuples extends App {
 
-  println("\n===== Polymorphic function values =======")
-
-
-  // Ordinary Scala function values are monomorphic. shapeless, however, provides an encoding of polymorphic function values.
-  // It supports natural transformations, which are familiar from libraries like Scalaz,
+  println("\n===== HList-style operations on standard Scala tuples =======")
 
 
-  // choose is a function from Sets to Options with no type specific cases
-  object choose extends (Set ~> Option) {
-    def apply[T](s : Set[T]): Option[T] = s.headOption
+  // shapeless allows standard Scala tuples to be manipulated in exactly the same ways as HLists,
+
+  import syntax.std.tuple._
+
+
+  println("\n>>> head, tail, take, drop, split:")
+  println((23, "foo", true).head )
+  // res0: Int = 23
+
+  println((23, "foo", true).tail )
+  // res1: (String, Boolean) = (foo,true)
+
+  println((23, "foo", true).drop(2) )
+  // res2: (Boolean,) = (true,)
+
+  println((23, "foo", true).take(2) )
+  // res3: (Int, String) = (23,foo)
+
+  println((23, "foo", true).split(1) )
+  // res4: ((Int,), (String, Boolean)) = ((23,),(foo,true))
+
+
+  println("\n>>> prepend, append, concatenate:")
+  println(23 +: ("foo", true) )
+  // res5: (Int, String, Boolean) = (23,foo,true)
+
+  println((23, "foo") :+ true )
+  // res6: (Int, String, Boolean) = (23,foo,true)
+
+  println((23, "foo") ++ (true, 2.0) )
+  // res7: (Int, String, Boolean, Double) = (23,foo,true,2.0)
+
+
+  println("\n>>> map, flatMap:")
+
+  import poly._
+
+  object option extends (Id ~> Option) {
+    def apply[T](t: T) = Option(t)
   }
 
-  println( choose(Set(1, 2, 3)) )
-  // res0: Option[Int] = Some(1)
+  println((23, "foo", true) map option )
+  // res8: (Option[Int], Option[String], Option[Boolean]) = (Some(23),Some(foo),Some(true))
 
-  println( choose(Set('a', 'b', 'c')) )
-  // res1: Option[Char] = Some(a)
-
-
-  // Being polymorphic, they may be passed as arguments to functions or methods and then applied to values of different types within those functions,
+  println(((23, "foo"), (), (true, 2.0)) flatMap identity )
+  // res9: (Int, String, Boolean, Double) = (23,foo,true,2.0)
 
 
-  def pairApply(f: Set ~> Option) = (f(Set(1, 2, 3)), f(Set('a', 'b', 'c')))
-  // pairApply: (f: shapeless.poly.~>[Set,Option])(Option[Int], Option[Char])
+  println("\n>>> fold:")
 
-  println( pairApply(choose) )
-  // res2: (Option[Int], Option[Char]) = (Some(1),Some(a))
+  object addSize extends Poly2 {
 
+    object size extends Poly1 {
 
-  // They are nevertheless interoperable with ordinary monomorphic function values,
+      implicit def caseInt: Case.Aux[Int, Int] =
+        at[Int](x => 1)
 
+      implicit def caseString: Case.Aux[String, Int] =
+        at[String](_.length)
 
-  // choose is convertible to an ordinary monomorphic function value and can be
-  // mapped across an ordinary Scala List
+      implicit def caseTuple[T, U](implicit st : Case.Aux[T, Int], su : Case.Aux[U, Int]): Case.Aux[(T, U), Int] =
+        at[(T, U)](t => size(t._1) + size(t._2))
+    }
 
-  println( List(Set(1, 3, 5), Set(2, 4, 6)) map choose )
-  // res3: List[Option[Int]] = List(Some(1), Some(2))
-
-
-  // However, they are more general than natural transformations and are able to capture type-specific cases which,
-  // as we'll see below, makes them ideal for generic programming,
-
-
-  // size is a function from Ints or Strings or pairs to a 'size' defined
-  // by type specific cases
-
-  object size extends Poly1 {
-
-    implicit def caseInt =
-      at[Int](x => 1)
-
-    implicit def caseString =
-      at[String](_.length)
-
-    implicit def caseTuple[T, U](implicit st : Case.Aux[T, Int], su : Case.Aux[U, Int]) =
-      at[(T, U)](t => size(t._1) + size(t._2))
+    implicit def default[T](implicit st: size.Case.Aux[T, Int]): Case.Aux[Int, T, Int] =
+      at[Int, T] { (acc, t) => acc + size(t) }
   }
 
-  println( size(23) )
-  // res4: Int = 1
+  println((23, "foo", (13, "wibble")).foldLeft(0)(addSize) )
+  // res10: Int = 11
 
-  println( size("foo") )
-  // res5: Int = 3
+  println("\n>>> conversion to `HList`s and ordinary Scala `List`s:")
+  println((23, "foo", true).productElements )
+  // res11: Int :: String :: Boolean :: HNil = 23 :: foo :: true :: HNil
 
-  println( size((23, "foo")) )
-  // res6: Int = 4
+  println((23, "foo", true).toList )
+  // res12: List[Any] = List(23, foo, true)
 
-  println( size(((23, "foo"), 13)) )
-  // res7: Int = 5
+  println("\n>>> zipper:")
+  import syntax.zipper._
+
+  println((23, ("foo", true), 2.0).toZipper.right.down.put("bar").root.reify )
+  // res13: (Int, (String, Boolean), Double) = (23,(bar,true),2.0)
 
 
   println("============\n")
