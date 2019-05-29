@@ -53,7 +53,7 @@ inThisBuild(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(gurnell, wiki, blog)
+  .aggregate(gurnell, wiki)
   .settings(
     name := projectName,
   )
@@ -74,15 +74,8 @@ lazy val wiki = (project in file("shapeless-wiki"))
     ),
   )
 
-lazy val blog = (project in file("miles-blog"))
-  .settings(
-    name := "miles-blog",
-    description := "Code snippets from Miles Sabin's blog: http://milessabin.com/blog",
-  )
-
 addCommandAlias("grm", "gurnell/runMain")
 addCommandAlias("wrm", "wiki/runMain")
-addCommandAlias("brm", "blog/runMain")
 
 /*
 libraryDependencies += {
