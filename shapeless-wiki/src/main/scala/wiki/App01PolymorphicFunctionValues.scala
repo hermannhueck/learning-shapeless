@@ -3,6 +3,9 @@ package wiki
 import shapeless._
 import poly._
 
+/*
+  https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0#polymorphic-function-values
+ */
 object App01PolymorphicFunctionValues extends App {
 
   println("\n===== Polymorphic function values =======")

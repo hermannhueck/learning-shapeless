@@ -2,6 +2,9 @@ package wiki
 
 import shapeless._
 
+/*
+  https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0#heterogenous-lists
+ */
 object App02HeterogeniousLists extends App {
 
   println("\n===== Heterogenous lists =======")
@@ -107,6 +110,8 @@ object App02HeterogeniousLists extends App {
 
   println("----- HList#unify -----")
 
+  // And it has a unify operation which converts it to an HList of elements of the least upper bound of the original types,
+
   val unified = apap.unify
   // unified: Fruit :: Fruit :: Fruit :: Fruit :: HNil = Apple() :: Pear() :: Apple() :: Pear() :: HNil
   println(unified)
@@ -114,12 +119,17 @@ object App02HeterogeniousLists extends App {
 
   println("----- HList#toList -----")
 
+  // It supports conversion to an ordinary Scala List of elements of the least upper bound of the original types,
+
   val list = apap.toList
   // list: List[Fruit] = List(Apple(), Pear(), Apple(), Pear())
   println(list)
 
 
   println("----- HList has a Typeable type class instance. -----")
+
+  // And it has a Typeable type class instance (see below), allowing, eg. vanilla List[Any]'s or HList's with elements of type Any
+  // to be safely cast to precisely typed HList's.
 
   import syntax.typeable._
 
@@ -131,6 +141,12 @@ object App02HeterogeniousLists extends App {
 
   println(s">>> Typeable[APAP].describe: ${Typeable[APAP].describe}")
   println(s">>> Typeable[APAP].toString: ${Typeable[APAP].toString}")
+
+  // These last three features make this HList dramatically more practically useful than HList's are typically thought to be:
+  // normally the full type information required to work with them is too fragile to cross subtyping or I/O boundaries.
+  // This implementation supports the discarding of precise information where necessary
+  // (eg. to serialize a precisely typed record after construction), and its later reconstruction
+  // (eg. a weakly typed deserialized record with a known schema can have it's precise typing reestabilished).
 
 
   println("============\n")

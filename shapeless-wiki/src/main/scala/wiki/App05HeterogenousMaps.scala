@@ -2,25 +2,40 @@ package wiki
 
 import shapeless._
 
-object App05 extends App {
+/*
+  https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0#heterogenous-maps
+ */
+object App05HeterogenousMaps extends App {
 
   println("\n===== Heterogenous maps =======")
 
 
-  // Conversions between tuples and HList's, and between ordinary Scala functions of arbitrary arity and functions
-  // which take a single corresponding HList argument allow higher order functions to abstract over the arity of the functions and values they are passed,
+  // Shapeless provides a heterogenous map which supports an arbitrary relation between the key type and the corresponding value type,
 
-  import ops.function._
-  import syntax.std.function._
+  // Key/value relation to be enforced: Strings map to Ints and vice versa
+  class BiMapIS[K, V]
+  implicit val intToString: BiMapIS[Int, String] = new BiMapIS[Int, String]
+  implicit val stringToInt: BiMapIS[String, Int] = new BiMapIS[String, Int]
 
-  def applyProduct[P <: Product, F, L <: HList, R](p: P)(f: F)(implicit gen: Generic.Aux[P, L], fp: FnToProduct.Aux[F, L => R]): R =
-    f.toProduct(gen.to(p))
+  val hm = HMap[BiMapIS](23 -> "foo", "bar" -> 13)
+  //val hm2 = HMap[BiMapIS](23 -> "foo", 23 -> 13)   // Does not compile
 
-  println(applyProduct(1, 2)((_: Int)+(_: Int)) )
-  // res0: Int = 3
+  println( hm.get(23) )
+  // res0: Option[String] = Some(foo)
 
-  println(applyProduct(1, 2, 3)((_: Int)*(_: Int)*(_: Int)) )
-  // res1: Int = 6
+  println( hm.get("bar") )
+  // res1: Option[Int] = Some(13)
+
+  // And in much the same way that an ordinary monomorphic Scala map can be viewed as a monomorphic function value,
+  // so too can a heterogenous shapeless map be viewed as a polymorphic function value,
+
+  import hm._
+
+  val l = 23 :: "bar" :: HNil
+  // l: Int :: String :: HNil = 23 :: bar :: HNil
+
+  println( l map hm )
+  // res2: String :: Int :: HNil = foo :: 13 :: HNil
 
 
   println("============\n")

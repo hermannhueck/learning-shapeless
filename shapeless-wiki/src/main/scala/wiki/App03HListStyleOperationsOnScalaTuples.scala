@@ -2,6 +2,9 @@ package wiki
 
 import shapeless._
 
+/*
+  https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0#hlist-style-operations-on-standard-scala-tuples
+ */
 object App03HListStyleOperationsOnScalaTuples extends App {
 
   println("\n===== HList-style operations on standard Scala tuples =======")
