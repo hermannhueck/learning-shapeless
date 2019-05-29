@@ -25,7 +25,6 @@ inThisBuild(
     //scalaVersion := "2.12.4-bin-typelevel-4"
     //scalaVersion := "2.13.0-M2-bin-typelevel-4"
 
-    // scalaVersion := "2.12.8",
     scalaVersion := "2.13.0-RC2",
 
     scalacOptions ++= Seq(
@@ -69,6 +68,10 @@ lazy val wiki = (project in file("shapeless-wiki"))
   .settings(
     name := "shapeless-wiki",
     description := "Code snippets from the Shapeless wiki: https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0",
+    scalaVersion := "2.12.8",
+    libraryDependencies ++= Seq(
+      Libraries.scalazDerivingShapeless, // lib not yet available for Scala 2.13.x
+    ),
   )
 
 lazy val blog = (project in file("miles-blog"))
