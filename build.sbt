@@ -50,7 +50,7 @@ inThisBuild(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(gurnell)
+  .aggregate(gurnell, wiki, blog)
   .settings(
     name := projectName,
   )
@@ -64,7 +64,27 @@ lazy val gurnell = (project in file("gurnell"))
     ),
   )
 
+lazy val wiki = (project in file("shapeless-wiki"))
+  .settings(
+    name := "shapeless-wiki",
+    description := "Code snippets from the Shapeless wiki: https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0",
+    libraryDependencies ++= Seq(
+      Libraries.shapeless,
+    ),
+  )
+
+lazy val blog = (project in file("miles-blog"))
+  .settings(
+    name := "miles-blog",
+    description := "Code snippets from Miles Sabin's blog: http://milessabin.com/blog",
+    libraryDependencies ++= Seq(
+      Libraries.shapeless,
+    ),
+  )
+
 addCommandAlias("grm", "gurnell/runMain")
+addCommandAlias("wrm", "wiki/runMain")
+addCommandAlias("brm", "blog/runMain")
 
 /*
 libraryDependencies += {
