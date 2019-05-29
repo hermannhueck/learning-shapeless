@@ -35,6 +35,8 @@ object App12AutomaticTypeClassInstanceDerivation extends App {
   // res1: Bar = Bar(true,foobar,4.0)
   println(res1)
 
+  // The shapeless-contrib (now scalaz-deriving) project also contains automatically derived type class instances for Scalaz, Spire and Scalacheck.
+
 
   println("============\n")
 
