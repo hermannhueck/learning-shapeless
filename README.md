@@ -1,7 +1,9 @@
 # Learning shapeless
 
-This repo contains the code snippets I copied from Dave Gurnell's book:
-*The Type Astronaut's Guide to Shapeless*.
+This repo contains (organized in sub-projects) code snippets from:
+ 
+- Dave Gurnell's book: *The Type Astronaut's Guide to Shapeless*.
+- The feature overview in the Shapeless Wiki
 
 ## Resources
 
