@@ -21,10 +21,6 @@ inThisBuild(
 
     version := "0.1.0",
 
-    //scalaOrganization := "org.typelevel",
-    //scalaVersion := "2.12.4-bin-typelevel-4"
-    //scalaVersion := "2.13.0-M2-bin-typelevel-4"
-
     scalaVersion := "2.13.0-RC2",
 
     scalacOptions ++= Seq(

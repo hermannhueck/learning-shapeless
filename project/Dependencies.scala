@@ -13,7 +13,6 @@ object Dependencies {
     import Versions._
 
     lazy val shapeless = "com.chuusai" %% "shapeless" % shapelessVersion withSources() withJavadoc()
-    lazy val scalazDeriving = "org.scalaz" %% "scalaz-deriving" % scalazDerivingVersion withSources() withJavadoc()
     lazy val scalazDerivingShapeless = "org.scalaz" %% "scalaz-deriving-shapeless" % scalazDerivingVersion withSources() withJavadoc()
   }
 }
