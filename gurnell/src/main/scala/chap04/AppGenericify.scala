@@ -2,7 +2,11 @@ package chap04
 
 import shapeless.Generic
 
-object Genericify extends App {
+/*
+  Dave Gurnells talk: The Type Astronaut's Guide to Shapeless
+  https://www.youtube.com/watch?v=Zt6LjUnOcFQ
+ */
+object AppGenericify extends App {
 
   println("\n===== genericify =====")
 
