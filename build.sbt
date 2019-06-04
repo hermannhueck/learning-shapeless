@@ -21,7 +21,7 @@ inThisBuild(
 
     version := "0.1.0",
 
-    scalaVersion := "2.13.0-RC2",
+    scalaVersion := "2.13.0-RC3",
 
     scalacOptions ++= Seq(
       "-encoding", "UTF-8", // source files are in UTF-8
