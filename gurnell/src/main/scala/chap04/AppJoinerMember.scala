@@ -4,9 +4,9 @@ package chap04
   Jon Pretty talk: Type Members vs. Type Parameters
   https://www.youtube.com/watch?v=R8GksuRw3VI
  */
-object AppJoiner extends App {
+object AppJoinerMember extends App {
 
-  println("\n===== Joiner =====")
+  println("\n===== Joiner (return type as type member) =====")
 
   println("\n>>> def doJoin[T](xs: Seq[T])(implicit j: Joiner[T]): j.R = j.join(xs)\n")
 
@@ -14,23 +14,23 @@ object AppJoiner extends App {
   println("It's return type depends on a value passed as an argument.\n")
 
   trait Joiner[Elem] {
-    type R
-
-    def join(xs: Seq[Elem]): R
+    type Result
+    def join(xs: Seq[Elem]): Result
   }
 
-  def doJoin[T](xs: Seq[T])(implicit j: Joiner[T]): j.R =
+  def doJoin[T](xs: Seq[T])(implicit j: Joiner[T]): j.Result =
     j.join(xs)
 
 
   // see the return type: it refines type R as String
-  implicit val charJoiner: Joiner[Char] { type R = String } =
+  implicit val charJoiner: Joiner[Char] { type Result = String } =
     new Joiner[Char] {
-      type R = String
-      override def join(xs: Seq[Char]): String = xs.mkString
+      type Result = String
+      override def join(xs: Seq[Char]): Result = xs.mkString // same as:
+      // override def join(xs: Seq[Char]): String = xs.mkString
     }
 
-  val chars: Seq[Char] = Seq('d', 'o', 'g', 'g', 'i', 'e')
+  val chars: Seq[Char] = Seq('m', 'y', ' ', 'd', 'o', 'g', 'g', 'i', 'e')
   println(chars)
 
   val str = doJoin(chars)
