@@ -17,6 +17,8 @@ This repo contains (organized in sub-projects) code snippets from:
   https://github.com/milessabin/shapeless/tree/master/examples/src/main/scala/shapeless/examples
 - Shapless API Docs<br/>
   https://javadoc.io/doc/com.chuusai/shapeless_2.13.0-RC2/2.3.3
+- Lars Hupel's blog post: Deriving Type Class Instances
+  https://typelevel.org/blog/2013/06/24/deriving-instances-1.html
   
 ## Videos
 
@@ -24,3 +26,5 @@ This repo contains (organized in sub-projects) code snippets from:
   https://www.youtube.com/watch?v=Zt6LjUnOcFQ
 - Jon Pretty's Talk: *Type Members vs Type Parameters* at NE Scala 2016<br/>
   https://www.youtube.com/watch?v=R8GksuRw3VI
+- Miles Sabin's Talk: Shapeless: Exploring Generic Programming in Scala
+  https://www.youtube.com/watch?v=GDbNxL8bqkY
