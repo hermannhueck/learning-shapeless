@@ -2,5 +2,7 @@
 target/
 
 /.idea
+.bloop/
+.metals/
 
 .DS_Store
