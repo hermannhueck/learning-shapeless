@@ -20,8 +20,9 @@ inThisBuild(
     ),
 
     version := "0.1.0",
-
-    scalaVersion := "2.13.0-RC3",
+    scalaVersion := "2.13.0",
+    turbo := true,
+    onChangedBuildSource := ReloadOnSourceChanges,
 
     scalacOptions ++= Seq(
       "-encoding", "UTF-8", // source files are in UTF-8
@@ -64,7 +65,7 @@ lazy val wiki = (project in file("shapeless-wiki"))
   .settings(
     name := "shapeless-wiki",
     description := "Code snippets from the Shapeless wiki: https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0",
-    scalaVersion := "2.12.8",
+    scalaVersion := "2.13.0",
     libraryDependencies ++= Seq(
       Libraries.scalazDerivingShapeless, // lib not yet available for Scala 2.13.x
     ),

@@ -5,7 +5,7 @@ object Dependencies {
   object Versions {
 
     val shapelessVersion = "2.3.3"
-    val scalazDerivingVersion = "1.0.0"
+    val scalazDerivingVersion = "2.0.0-M1"
   }
 
   object Libraries {
