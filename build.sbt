@@ -4,23 +4,8 @@ val shapeless = "com.chuusai" %% "shapeless" % "2.3.3" withSources() withJavadoc
 val scalazDerivingShapeless = "org.scalaz" %% "scalaz-deriving-shapeless" % "2.0.0-M1" withSources() withJavadoc()
 
 val projectName = "learning-shapeless"
-val githubId = "hermannhueck"
-val githubHome = s"https://github.com/$githubId"
-val projectUrl = s"$githubHome/$projectName"
 
 inThisBuild(
-  Seq(
-    organization := "io.hueck",
-    organizationName := "Hueck",
-    description := "This project contains the code I copied and produced while learning shapeless",
-    homepage := Some(url(projectUrl)),
-    startYear := Some(2019),
-    licenses := Vector(("MIT", url("https://opensource.org/licenses/MIT"))),
-    scmInfo := Some(ScmInfo(url(projectUrl), s"$projectUrl.git")),
-    developers := List(
-      Developer(id = githubId, name = "Hermann Hueck", email = "", url = url(githubHome))
-    ),
-
     version := "0.1.0",
     scalaVersion := "2.13.0",
     turbo := true,
