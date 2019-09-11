@@ -45,18 +45,26 @@ lazy val root = (project in file("."))
   )
 
 lazy val gurnell = (project in file("gurnell"))
+  .dependsOn(util)
   .settings(
     name := "gurnell",
     description := "Code from Dave Gurnells book: The Type Astronaut's Guide to Shapeless",
   )
 
 lazy val wiki = (project in file("shapeless-wiki"))
+  .dependsOn(util)
   .settings(
     name := "shapeless-wiki",
     description := "Code snippets from the Shapeless wiki: https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0",
     libraryDependencies ++= Seq(
       scalazDerivingShapeless,
     ),
+  )
+
+lazy val util = (project in file("util"))
+  .settings(
+    name := "util",
+    description := "Utilities",
   )
 
 addCommandAlias("grm", "gurnell/runMain")
