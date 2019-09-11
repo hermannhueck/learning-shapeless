@@ -1,5 +1,7 @@
-import Dependencies._
 import sbt.url
+
+val shapeless = "com.chuusai" %% "shapeless" % "2.3.3" withSources() withJavadoc()
+val scalazDerivingShapeless = "org.scalaz" %% "scalaz-deriving-shapeless" % "2.0.0-M1" withSources() withJavadoc()
 
 val projectName = "learning-shapeless"
 val githubId = "hermannhueck"
@@ -36,7 +38,7 @@ inThisBuild(
     ),
 
     libraryDependencies ++= Seq(
-      Libraries.shapeless,
+      shapeless,
     ),
 
     initialCommands := s"""
@@ -65,9 +67,8 @@ lazy val wiki = (project in file("shapeless-wiki"))
   .settings(
     name := "shapeless-wiki",
     description := "Code snippets from the Shapeless wiki: https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0",
-    scalaVersion := "2.13.0",
     libraryDependencies ++= Seq(
-      Libraries.scalazDerivingShapeless, // lib not yet available for Scala 2.13.x
+      scalazDerivingShapeless,
     ),
   )
 
