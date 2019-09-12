@@ -5,11 +5,15 @@ import shapeless.{::, Generic, HList, HNil}
 
 import scala.language.reflectiveCalls
 
+import util._
+
 object Chap022ProductEncodings extends App {
 
-  println("\n===== 2.2 Generic product encodings =====")
+  // ----------------------------------------
+  prtTitle("2.2 Generic product encodings")
 
-  val product: String :: Int :: Boolean :: HNil = "Sunday" :: 1 :: false :: HNil
+  val product: String :: Int :: Boolean :: HNil =
+    "Sunday" :: 1 :: false :: HNil
 
   val first = product.head
   // first: String = Sunday
@@ -30,7 +34,8 @@ object Chap022ProductEncodings extends App {
   val newProduct = 42L :: product
   println(newProduct)
 
-  println("----- 2.2.1 Switching representations using Generic -----")
+  // ----------------------------------------
+  prtSubTitle("2.2.1 Switching representations using Generic")
 
   case class IceCream(name: String, numCherries: Int, inCone: Boolean)
   val iceCreamGen: Aux[IceCream, String :: Int :: Boolean :: HNil] = Generic[IceCream]
@@ -68,7 +73,8 @@ object Chap022ProductEncodings extends App {
   println(tuple)
 
 
-  println
+  // ----------------------------------------
+  prtSubTitle("Works with more than 22 fields")
   case class BigData(a:Int,b:Int,c:Int,d:Int,e:Int,f:Int,g:Int,h:Int,i:Int,j:Int, k:Int,l:Int,m:Int,n:Int,o:Int,p:Int,q:Int,r:Int,s:Int,t:Int,u:Int,v:Int,w:Int)
 
   val bigData: BigData = BigData(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23)
@@ -82,5 +88,5 @@ object Chap022ProductEncodings extends App {
   println(bigData2)
 
 
-  println("==========\n")
+  prtLine()
 }

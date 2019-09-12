@@ -3,9 +3,12 @@ package chap02
 import shapeless.Generic.Aux
 import shapeless.{:+:, ::, CNil, Generic, HList, HNil, Inl, Inr}
 
+import util._
+
 object Chap023GenericCoproducts extends App {
 
-  println("\n===== 2.3 Generic coproducts =====")
+  // ----------------------------------------
+  prtTitle("2.3 Generic coproducts")
 
   case class Red()
   case class Amber()
@@ -21,7 +24,8 @@ object Chap023GenericCoproducts extends App {
   println(green)
 
 
-  println("----- 2.3.1 Switching encodings using Generic -----")
+  // ----------------------------------------
+  prtSubTitle("2.3.1 Switching encodings using Generic")
 
   sealed trait Shape
   final case class Rectangle(width: Double, height: Double) extends Shape
@@ -36,5 +40,6 @@ object Chap023GenericCoproducts extends App {
   val coprCircle = gen.to(Circle(1.0))
   println(coprCircle)
 
-  println("==========\n")
+  
+  prtLine()
 }
