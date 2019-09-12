@@ -4,9 +4,12 @@ import shapeless.Generic.Aux
 import shapeless.{::, Generic, HList, HNil}
 import shapeless.{Coproduct, :+:, CNil, Inl, Inr}
 
+import util._
+
 object Chap032aDerivingInstancesForProductsSpecific extends App {
 
-  println("\n===== 3.2 Deriving instances for products (specific instances) =====")
+  // ----------------------------------------
+  prtTitle("3.2 Deriving instances for products (specific instances)")
 
   // The type class: a trait with at least one type parameter:
   // Turn a value of type A into a row of cells in a CSV file:
@@ -52,7 +55,8 @@ object Chap032aDerivingInstancesForProductsSpecific extends App {
   }
 
 
-  println("\n----- 3.2.1 Instances for HLists -----")
+  // ----------------------------------------
+  prtSubTitle("3.2.1 Instances for HLists")
 
   val reprEncoder: CsvEncoder[String :: Int :: Boolean :: HNil] = implicitly
 
@@ -61,7 +65,8 @@ object Chap032aDerivingInstancesForProductsSpecific extends App {
   println(encodedHList)
 
 
-  println("\n----- 3.2.2 Instances for concrete products -----")
+  // ----------------------------------------
+  prtSubTitle("3.2.2 Instances for concrete products")
 
   case class IceCream(name: String, numCherries: Int, inCone: Boolean)
 
@@ -116,5 +121,5 @@ object Chap032aDerivingInstancesForProductsSpecific extends App {
   println(encodedPairs)
 
 
-  println("==========\n")
+  prtLine()
 }

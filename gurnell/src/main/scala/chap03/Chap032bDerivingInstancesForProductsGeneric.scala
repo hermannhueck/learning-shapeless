@@ -3,9 +3,12 @@ package chap03
 import shapeless.Generic.Aux
 import shapeless.{:+:, ::, CNil, Coproduct, Generic, HList, HNil, Inl, Inr}
 
-object Chap032bDerivingInstancesForProductsGeneric extends App {
+import util._
 
-  println("\n===== 3.2 Deriving instances for products (generic instances) =====")
+object  Chap032bDerivingInstancesForProductsGeneric extends App {
+
+  // ----------------------------------------
+  prtTitle("3.2 Deriving instances for products (generic instances)")
 
   // The type class: a trait with at least one type parameter:
   // Turn a value of type A into a row of cells in a CSV file:
@@ -51,7 +54,8 @@ object Chap032bDerivingInstancesForProductsGeneric extends App {
   }
 
 
-  println("\n----- 3.2.1 Instances for HLists -----")
+  // ----------------------------------------
+  prtSubTitle("3.2.1 Instances for HLists")
 
   val reprEncoder: CsvEncoder[String :: Int :: Boolean :: HNil] = implicitly
 
@@ -60,7 +64,8 @@ object Chap032bDerivingInstancesForProductsGeneric extends App {
   println(encodedHList)
 
 
-  println("\n----- 3.2.2 Instances for concrete products -----")
+  // ----------------------------------------
+  prtSubTitle("3.2.2 Instances for concrete products", leading = "\n")
 
   case class IceCream(name: String, numCherries: Int, inCone: Boolean)
 
@@ -78,7 +83,7 @@ object Chap032bDerivingInstancesForProductsGeneric extends App {
     Employee("Milton", 3, false)
   )
 
-  val employeesWithIceCrams: List[(Employee, IceCream)] = employees zip iceCreams
+  val employeesWithIceCreams: List[(Employee, IceCream)] = employees zip iceCreams
 
 
 /*
@@ -133,12 +138,13 @@ object Chap032bDerivingInstancesForProductsGeneric extends App {
     }
 
   println
-  println(writeCsv(employeesWithIceCrams))
+  println(writeCsv(employeesWithIceCreams))
 
 
-  println("\n----- 3.2.3 So what are the downsides? -----")
+  // ----------------------------------------
+  prtSubTitle("3.2.3 So what are the downsides? Two typical errors ...", leading = "\n")
 
-  //
+  println("1. The object to encode is not an ADT, e.g. a normal class.")
   class Foo(bar: String, baz: Int)
   // writeCsv(List(new Foo("abc", 123)))
   // <console>:26: error:
@@ -149,6 +155,7 @@ object Chap032bDerivingInstancesForProductsGeneric extends App {
   // Foo should be a case class
 
 
+  println("2. One of the case class params has no CsvEncoder instance.")
   import java.util.Date
   case class Booking(room: String, date: Date)
   // writeCsv(List(Booking("Lecture hall", new Date())))
@@ -160,5 +167,5 @@ object Chap032bDerivingInstancesForProductsGeneric extends App {
   // needs an implicit CsvEncoder for java.util.Date
 
 
-  println("==========\n")
+  prtLine()
 }

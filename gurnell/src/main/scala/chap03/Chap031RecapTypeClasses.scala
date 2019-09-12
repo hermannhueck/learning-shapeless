@@ -1,8 +1,11 @@
 package chap03
 
+import util._
+
 object Chap031RecapTypeClasses extends App {
 
-  println("\n===== 3.1 Recap: type classes =====")
+  // ----------------------------------------
+  prtTitle("3.1 Recap: type classes")
 
   // The type class: a trait with at least one type parameter:
   // Turn a value of type A into a row of cells in a CSV file:
@@ -10,22 +13,27 @@ object Chap031RecapTypeClasses extends App {
     def encode(value: A): List[String]
   }
 
+  println("--- Encoding Employee instances:")
+
   // Custom data type:
   case class Employee(name: String, number: Int, manager: Boolean)
 
   // CsvEncoder instance for the custom data type:
-  implicit val employeeEncoder: CsvEncoder[Employee] = new CsvEncoder[Employee] {
-    def encode(e: Employee): List[String] =
-      List(
-        e.name,
-        e.number.toString,
-        if(e.manager) "yes" else "no"
-      )
-  }
+  implicit val employeeEncoder: CsvEncoder[Employee] =
+    new CsvEncoder[Employee] {
+      def encode(e: Employee): List[String] =
+        List(
+          e.name,
+          e.number.toString,
+          if (e.manager) "yes" else "no"
+        )
+    }
 
   def writeCsv[A](values: List[A])(implicit encoder: CsvEncoder[A]): String =
     values
-      .map { value => encoder.encode(value).mkString(",") }
+      .map { value =>
+        encoder.encode(value).mkString(",")
+      }
       .mkString("\n")
 
   val employees: List[Employee] = List(
@@ -37,19 +45,20 @@ object Chap031RecapTypeClasses extends App {
   val encodedEmployees: String = writeCsv(employees)
   println(encodedEmployees)
 
-
   println
+  println("--- Encoding IceCream instances:")
 
   case class IceCream(name: String, numCherries: Int, inCone: Boolean)
 
-  implicit val iceCreamEncoder: CsvEncoder[IceCream] = new CsvEncoder[IceCream] {
-    def encode(i: IceCream): List[String] =
-      List(
-        i.name,
-        i.numCherries.toString,
-        if(i.inCone) "yes" else "no"
-      )
-  }
+  implicit val iceCreamEncoder: CsvEncoder[IceCream] =
+    new CsvEncoder[IceCream] {
+      def encode(i: IceCream): List[String] =
+        List(
+          i.name,
+          i.numCherries.toString,
+          if (i.inCone) "yes" else "no"
+        )
+    }
 
   val iceCreams: List[IceCream] = List(
     IceCream("Sundae", 1, false),
@@ -60,10 +69,16 @@ object Chap031RecapTypeClasses extends App {
   val encodedIceCreams: String = writeCsv(iceCreams)
   println(encodedIceCreams)
 
+  println
 
-  println("----- 3.1.1 Resolving instances -----")
+  // ----------------------------------------
+  prtSubTitle("3.1.1 Resolving instances")
 
-  implicit def pairEncoder[A, B](implicit aEncoder: CsvEncoder[A], bEncoder: CsvEncoder[B]): CsvEncoder[(A, B)] =
+  implicit def pairEncoder[A, B](
+      implicit
+      aEncoder: CsvEncoder[A],
+      bEncoder: CsvEncoder[B]
+  ): CsvEncoder[(A, B)] =
     new CsvEncoder[(A, B)] {
       def encode(pair: (A, B)): List[String] = {
         val (a, b) = pair
@@ -75,18 +90,19 @@ object Chap031RecapTypeClasses extends App {
   val encodedPairs: String = writeCsv(pairs)
   println(encodedPairs)
 
-
-  println("----- 3.1.2 Idiomatic type class definitions -----")
+  // ----------------------------------------
+  prtSubTitle("3.1.2 Idiomatic type class definitions")
 
   object CsvEncoder {
 
-    // "Summoner" method
+    // "Summoner" or "Materializer" method
     def apply[A](implicit encoder: CsvEncoder[A]): CsvEncoder[A] = encoder
 
     // "Constructor" method
-    def instance[A](func: A => List[String]): CsvEncoder[A] = new CsvEncoder[A] {
-      def encode(value: A): List[String] = func(value)
-    }
+    def instance[A](func: A => List[String]): CsvEncoder[A] =
+      new CsvEncoder[A] {
+        def encode(value: A): List[String] = func(value)
+      }
 
     // Globally visible type class instances
 
@@ -99,7 +115,7 @@ object Chap031RecapTypeClasses extends App {
 
     // use:
     implicit val booleanEncoder: CsvEncoder[Boolean] =
-      instance(b => if(b) List("yes") else List("no"))
+      instance(b => if (b) List("yes") else List("no"))
   }
 
   // retrieves booleanEncoder in implicit scope of companion object CsvEncoder
@@ -107,5 +123,5 @@ object Chap031RecapTypeClasses extends App {
   //
   println(writeCsv(List(true, false)))
 
-  println("==========\n")
+  prtLine()
 }
