@@ -36,6 +36,7 @@ inThisBuild(Seq(
       import shapeless.labelled._
       import shapeless.ops._
       import shapeless.syntax._
+      import shapeless.syntax.singleton._
       println
       """.stripMargin // initialize REPL
 ))
