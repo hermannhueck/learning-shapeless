@@ -1,38 +1,42 @@
 package chap05
 
+import util._
+
 object Chap051LiteralTypes extends App {
 
-  println("\n===== 5.1 Literal types =====")
+  prtTitle("5.1 Literal Types")
 
+  prtSubTitle("Singleton Types")
   object Foo
   // defined object Foo
 
   Foo
   // res0: Foo.type = Foo$@34b22273
 
+  val s1 = "hello"
+  // s1: String = hello
 
-  "hello"
-  // res1: String = hello
+  val s2 = ("hello": String)
+  // s2: String = hello
 
-  ("hello" : String)
-  // res2: String = hello
-
+  prtSubTitle("<literal>.narrow")
 
   import shapeless.syntax.singleton._
 
-  // var x = 42.narrow
-  // x: Int(42) = 42
+  val x1 = 42.narrow
 
-  // x = 43
+  // var x2 = 42.narrow
+  // x2: Int(42) = 42
+
+  // x2 = 43
   // <console>:16: error: type mismatch:
   //  found   : Int(43)
   //  required: Int(42)
   //        x = 43
   // ^
 
-  // x+1
-  // res3: Int = 43
-
+  val y = x1 + 1
+  // y: Int = 43
 
   // We can use narrow on any literal in Scala:
   1.narrow
@@ -42,7 +46,6 @@ object Chap051LiteralTypes extends App {
   "hello".narrow
   // res6: String("hello") = hello
   // and so on...
-
 
   // However, we can’t use it on compound expressions:
   // math.sqrt(4).narrow
@@ -54,12 +57,5 @@ object Chap051LiteralTypes extends App {
   // math.sqrt(4.0).narrow
   //                ^
 
-
-  // Literal types in Scala 2.13:
-  val theAnswer0: 42 = 42
-  lazy val theAnswer1: 42 = 42
-  var theAnswer2: 42 = 42
-
-
-  println("==========\n")
+  prtLine()
 }

@@ -1,18 +1,28 @@
 package chap05
 
-object Chap052TypeTaggingAndPhantomTypes extends App {
+import util._
 
-  println("\n===== 5.2 Type taging and phantom types =====")
+object Chap052TypeTaggingWithPhantomTypes extends App {
+
+  // ----------------------------------------
+  prtTitle("5.2 Type taging and phantom types")
 
   val number = 42
 
   trait Cherries
 
   {
-    val numCherries = number.asInstanceOf[Int with Cherries]
-    // numCherries: Int with Cherries = 42
-  }
+    // tagging an Int with type Cherries
 
+    val intWithCherries = number.asInstanceOf[Int with Cherries] // 2.12.x and 2.13.x
+    // intWithCherries: Int with Cherries = 42
+    println(s"intWithCherries = $intWithCherries")
+
+    // val numCherries = number.asInstanceOf[Int with "numCherries"] // only 2.13.x
+    // numCherries: Int with "numCherries" = 42
+    // the String "numCherries" is also a type in 2.13.x
+    // println(s"numCherries = $numCherries")
+  }
 
   {
     import shapeless.syntax.singleton._
@@ -21,17 +31,19 @@ object Chap052TypeTaggingAndPhantomTypes extends App {
     // someNumber: Int = 123
 
     val numCherries = "numCherries" ->> someNumber
-    // numCherries: Int with shapeless.labelled.KeyTag[String("numCherries "),Int] = 123
+    // numCherries: Int with KeyTag[String("numCherries "), Int] = 123
+    // KeyTag[String("numCherries "), Int] is the phantom type with which the Int value is tag
   }
-
 
   {
     import shapeless.labelled.field
 
     field[Cherries](123)
-    // res11: shapeless.labelled.FieldType[Cherries,Int] = 123
-  }
+    // res11: shapeless.labelled.FieldType[Cherries, Int] = 123
 
+    // type FieldType[K, V] = V with KeyTag[K, V]
+    // type FieldType[Cherries, Int] = Int with KeyTag[Cherries, Int]
+  }
 
   {
     import shapeless.Witness
@@ -45,29 +57,29 @@ object Chap052TypeTaggingAndPhantomTypes extends App {
     def getFieldName[K, V](value: FieldType[K, V])(implicit witness: Witness.Aux[K]): K =
       witness.value
 
-    val n = getFieldName(numCherries)
-    // n: String = numCherries
-    println(n)
+    val key = getFieldName(numCherries)
+    // key: String = numCherries
+    println(key)
 
     // Get the untagged type of a tagged value:
     def getFieldValue[K, V](value: FieldType[K, V]): V =
       value
 
-    val v = getFieldValue(numCherries)
-    // v: Int = 123
-    println(v)
+    val value = getFieldValue(numCherries)
+    // value: Int = 123
+    println(value)
 
     def getFieldNameAndValue[K, V](value: FieldType[K, V])(implicit witness: Witness.Aux[K]): (K, V) =
       (witness.value, value)
 
-    val nv = getFieldNameAndValue(numCherries)
+    val keyValue = getFieldNameAndValue(numCherries)
     // nv: (String("numCherries"), Int) = (numCherries,123)
-    println(nv)
+    println(keyValue)
   }
 
-
+  // ----------------------------------------
   {
-    println("----- 5.2.1 Records and LabelledGeneric -----")
+    println("----- 5.2.1 Records and LabelledGeneric")
 
     import shapeless.HNil
     import shapeless.syntax.singleton._
@@ -80,9 +92,8 @@ object Chap052TypeTaggingAndPhantomTypes extends App {
     //      FieldType["cat", String]  ::
     //      FieldType["orange", Boolean] ::
     //      HNil
+    println(garfield)
   }
 
-
-
-  println("==========\n")
+  prtLine()
 }
