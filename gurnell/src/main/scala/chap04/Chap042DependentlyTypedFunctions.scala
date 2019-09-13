@@ -2,11 +2,15 @@ package chap04
 
 import shapeless.{::, HList, HNil, the}
 
-object Chap042DependentlyTypedFunctions extends App {
+import util._
 
-  println("\n===== 4.2 Dependently typed functions =====")
+object  Chap042DependentlyTypedFunctions extends App {
 
-  println("----- Last -----")
+  // ----------------------------------------
+  prtTitle("4.2 Dependently typed functions")
+
+  // ----------------------------------------
+  prtSubTitle("Last")
 
   {
 
@@ -54,24 +58,34 @@ object Chap042DependentlyTypedFunctions extends App {
 
     val hlist = "foo" :: 123 :: HNil
 
+    // ----------------------------------------
+    prtSubTitle("Avoid implicitly")
+
     // summon type class with 'implicitly' (not recommended)
     val l1: Last[String :: Int :: HNil] = implicitly[Last[String :: Int :: HNil]]
     // res6: shapeless.ops.hlist.Last[String :: Int :: shapeless. HNil] = shapeless.ops.hlist$Last$$anon$34@102cd43e
-    println(l1(hlist))
+    println("implicitly: " + l1(hlist))
 
     // summon type class with 'apply'
     val l2: Aux[String :: Int :: HNil, Int] = Last[String :: Int :: HNil]
     // res7: shapeless.ops.hlist.Last[String :: Int :: shapeless. HNil]{type Out = Int} = shapeless.ops.hlist$Last$$anon$34@38257104
-    println(l2(hlist))
+    println("apply     : " + l2(hlist))
 
     // summon type class with 'shapleless.the'
     val l3: Last[String :: Int :: HNil] = the[Last[String :: Int :: HNil]]
     // res8: shapeless.ops.hlist.Last[String :: Int :: shapeless. HNil]{type Out = Int} = shapeless.ops.hlist$Last$$anon$34@3e87b151
-    println(l3(hlist))
+    println("the       : " + l3(hlist))
+
+    println("""
+    The type summoned by implicitly has no Out type member. For this reason,
+    we should avoid implicitly when working with dependently typed functons.
+    We can either use custom summoner methods, or we can use shapeless’ replacement method, the.
+    """)
   }
 
 
-  println("----- Second -----")
+  // ----------------------------------------
+  prtSubTitle("Second")
 
   {
     trait Second[L <: HList] {
@@ -121,5 +135,5 @@ object Chap042DependentlyTypedFunctions extends App {
     // ^
   }
 
-  println("==========\n")
+  prtLine()
 }

@@ -1,14 +1,16 @@
-package chap04
+package chap04.propensive
 
 /*
   Jon Pretty talk: Type Members vs. Type Parameters
   https://www.youtube.com/watch?v=R8GksuRw3VI
  */
-object AppJoinerMember extends App {
+import util._
 
-  println("\n===== Joiner (return type as type member) =====")
+object  AppJoinerAux extends App {
 
-  println("\n>>> def doJoin[T](xs: Seq[T])(implicit j: Joiner[T]): j.R = j.join(xs)\n")
+  prtTitle("Joiner (return type as type member - using the Aux pattern)")
+
+  println(">>> doJoin[T, R](xs: Seq[T])(implicit j: Joiner.Aux[T, R]): R = j.join(xs)\n")
 
   println("doJoin is a dependently typed method.")
   println("It's return type depends on a value passed as an argument.\n")
@@ -18,12 +20,16 @@ object AppJoinerMember extends App {
     def join(xs: Seq[Elem]): Result
   }
 
-  def doJoin[T](xs: Seq[T])(implicit j: Joiner[T]): j.Result =
+  object Joiner {
+    type Aux[T, R] = Joiner[T] { type Result = R }
+  }
+
+  def doJoin[T, R](xs: Seq[T])(implicit j: Joiner.Aux[T, R]): R =
     j.join(xs)
 
 
   // see the return type: it refines type R as String
-  implicit val charJoiner: Joiner[Char] { type Result = String } =
+  implicit val charJoiner: Joiner.Aux[Char, String] =
     new Joiner[Char] {
       type Result = String
       override def join(xs: Seq[Char]): Result = xs.mkString // same as:
@@ -36,5 +42,5 @@ object AppJoinerMember extends App {
   val str = doJoin(chars)
   println(str)
 
-  println("==========\n")
+  prtLine()
 }

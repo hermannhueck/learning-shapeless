@@ -1,14 +1,16 @@
-package chap04
+package chap04.propensive
 
 /*
   Jon Pretty talk: Type Members vs. Type Parameters
   https://www.youtube.com/watch?v=R8GksuRw3VI
  */
-object AppJoinerParam extends App {
+import util._
 
-  println("\n===== Joiner (return type as type parameter) =====")
+object  AppJoinerParam extends App {
 
-  println("\n>>> def doJoin[T, R](xs: Seq[T])(implicit j: Joiner[T, R]): R = j.join(xs)\n")
+  prtTitle("Joiner (return type as type parameter)")
+
+  println(">>> def doJoin[T, R](xs: Seq[T])(implicit j: Joiner[T, R]): R = j.join(xs)\n")
 
   println("doJoin is NOT a dependently typed method.")
   println("It's return type is specified as type parameter.\n")
@@ -33,5 +35,5 @@ object AppJoinerParam extends App {
   val str = doJoin(chars)
   println(str)
 
-  println("==========\n")
+  prtLine()
 }
