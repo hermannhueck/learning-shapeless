@@ -1,13 +1,15 @@
 package chap06
 
+import shapeless._
+import util._
+
 object Chap062CreatingACustomOp extends App {
 
-  println("\n===== 6.2 Creating a custom op (the “lemma” pattern) =====")
+  // ----------------------------------------
+  prtTitle("6.2 Creating a custom op (the “lemma” pattern)")
 
-  println("\n----- Example: Penultimate (for HList) -----")
-
-
-  import shapeless._
+  // ----------------------------------------
+  prtSubTitle("Example: Penultimate (for HList)")
 
   trait Penultimate[L] {
     type Out
@@ -19,27 +21,24 @@ object Chap062CreatingACustomOp extends App {
     def apply[L](implicit p: Penultimate[L]): Aux[L, p.Out] = p
   }
 
-
   import shapeless.ops.hlist
 
   implicit def hlistPenultimate[L <: HList, M <: HList, O](
-                                                            implicit
-                                                            init: hlist.Init.Aux[L, M],
-                                                            last: hlist.Last.Aux[M, O]
-                                                          ): Penultimate.Aux[L, O] =
+      implicit
+      init: hlist.Init.Aux[L, M],
+      last: hlist.Last.Aux[M, O]
+  ): Penultimate.Aux[L, O] =
     new Penultimate[L] {
       type Out = O
       def apply(l: L): O =
         last.apply(init.apply(l))
     }
 
-
   type BigList = String :: Int :: Boolean :: Double :: HNil
   val bigList: BigList = "foo" :: 123 :: true :: 456.0 :: HNil
   val blPenultimate = Penultimate[BigList].apply(bigList)
   // blPenultimate: Boolean = true
   println(blPenultimate)
-
 
   type TinyList = String :: HNil
   val tinyList = "bar" :: HNil
@@ -48,9 +47,7 @@ object Chap062CreatingACustomOp extends App {
   //        Penultimate[TinyList].apply(tinyList)
   //                   ^
 
-
   implicit class PenultimateOps[A](a: A) {
-
     def penultimate(implicit inst: Penultimate[A]): inst.Out =
       inst.apply(a)
   }
@@ -59,14 +56,14 @@ object Chap062CreatingACustomOp extends App {
   // blPenultimate2: Boolean = true
   println(blPenultimate2)
 
-
-  println("\n----- Example: Penultimate (for Product, i.e. case class) -----")
+  // ----------------------------------------
+  prtSubTitle("Example: Penultimate (for Product, i.e. case class)")
 
   implicit def genericPenultimate[A, R, O](
-                                            implicit
-                                            generic: Generic.Aux[A, R],
-                                            penultimate: Penultimate.Aux[R, O]
-                                          ): Penultimate.Aux[A, O] =
+      implicit
+      generic: Generic.Aux[A, R],
+      penultimate: Penultimate.Aux[R, O]
+  ): Penultimate.Aux[A, O] =
     new Penultimate[A] {
       type Out = O
       def apply(a: A): O =
@@ -79,6 +76,5 @@ object Chap062CreatingACustomOp extends App {
   // icPenultimate: Int = 1
   println(icPenultimate)
 
-
-  println("==========\n")
+  prtLine()
 }

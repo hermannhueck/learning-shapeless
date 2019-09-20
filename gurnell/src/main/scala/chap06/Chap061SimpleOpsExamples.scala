@@ -1,11 +1,12 @@
 package chap06
 
+import shapeless._
+import util._
+
 object Chap061SimpleOpsExamples extends App {
 
-  println("\n===== 6.1 Simple ops examples =====")
-
-
-  import shapeless._
+  // ----------------------------------------
+  prtTitle("6.1 Simple ops examples")
 
   val l = ("Hello" :: 123 :: true :: HNil).last
   // l: Boolean = true
@@ -20,6 +21,5 @@ object Chap061SimpleOpsExamples extends App {
   //        HNil.last
   //             ^
 
-
-  println("==========\n")
+  prtLine()
 }

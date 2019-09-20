@@ -3,10 +3,12 @@ package chap06
 import shapeless._
 import shapeless.ops.hlist
 
+import util._
+
 object Chap063CaseClassMigrations extends App {
 
-  println("\n===== 6.3 Case study: case class migrations =====")
-
+  // ----------------------------------------
+  prtTitle("6.3 Case study: case class migrations")
 
   case class IceCreamV1(name: String, numCherries: Int, inCone: Boolean)
 
@@ -19,13 +21,12 @@ object Chap063CaseClassMigrations extends App {
   // Insert fields (provided we can determine a default value):
   case class IceCreamV2c(name: String, inCone: Boolean, numCherries: Int, numWaffles: Int)
 
-
   // Ideally we’d like to be able to write code like this:
   //
   // IceCreamV1("Sundae", 1, false).migrateTo[IceCreamV2a]
 
-
-  println("----- 6.3.1 The type class -----")
+  // ----------------------------------------
+  prtSubTitle("6.3.1 The type class")
 
   trait Migration[A, B] {
     def apply(a: A): B
@@ -39,19 +40,20 @@ object Chap063CaseClassMigrations extends App {
   val iceCreamV1 = IceCreamV1("Sundae", 1, true)
   println(s"IceCreamV1: $iceCreamV1")
 
-
+  // ----------------------------------------
   {
-    println("----- 6.3.2 Step 1. Removing fields -----")
+    prtSubTitle("6.3.2 Step 1. Removing fields")
 
     implicit def genericMigration[
-      A, B,
-      ARepr <: HList,
-      BRepr <: HList
+        A,
+        B,
+        ARepr <: HList,
+        BRepr <: HList
     ](
-      implicit
-      aGen: LabelledGeneric.Aux[A, ARepr],
-      bGen: LabelledGeneric.Aux[B, BRepr],
-      intersection: hlist.Intersection.Aux[ARepr, BRepr, BRepr]
+        implicit
+        aGen: LabelledGeneric.Aux[A, ARepr],
+        bGen: LabelledGeneric.Aux[B, BRepr],
+        intersection: hlist.Intersection.Aux[ARepr, BRepr, BRepr]
     ): Migration[A, B] =
       new Migration[A, B] {
         def apply(a: A): B = {
@@ -67,21 +69,23 @@ object Chap063CaseClassMigrations extends App {
     println(s"IceCreamV2a: $icWithRemovedFields")
   }
 
-
+  // ----------------------------------------
   {
-    println("----- 6.3.3 Step 2. Reordering fields -----")
+    prtSubTitle("6.3.3 Step 2. Reordering fields")
 
     implicit def genericMigration[
-      A, B,
-      ARepr <: HList, BRepr <: HList,
-      Unaligned <: HList
+        A,
+        B,
+        ARepr <: HList,
+        BRepr <: HList,
+        UnalignedRepr <: HList
     ](
-       implicit
-       aGen: LabelledGeneric.Aux[A, ARepr],
-       bGen: LabelledGeneric.Aux[B, BRepr],
-       intersection: hlist.Intersection.Aux[ARepr, BRepr, Unaligned],
-       align: hlist.Align[Unaligned, BRepr]
-     ): Migration[A, B] =
+        implicit
+        aGen: LabelledGeneric.Aux[A, ARepr],
+        bGen: LabelledGeneric.Aux[B, BRepr],
+        intersection: hlist.Intersection.Aux[ARepr, BRepr, UnalignedRepr],
+        align: hlist.Align[UnalignedRepr, BRepr]
+    ): Migration[A, B] =
       new Migration[A, B] {
         def apply(a: A): B = {
           val aRepr = aGen.to(a)
@@ -108,9 +112,9 @@ object Chap063CaseClassMigrations extends App {
     //                                        ^
   }
 
-
+  // ----------------------------------------
   {
-    println("----- 6.3.4 Step 3. Adding fields -----")
+    prtSubTitle("6.3.4 Step 3. Adding fields")
 
     // we work with Monoids just to get the 'empty' value
     // we don't need the Monoid.combine
@@ -141,13 +145,12 @@ object Chap063CaseClassMigrations extends App {
       monoidInstance[HNil](HNil)((x, y) => HNil)
 
     implicit def emptyHList[K <: Symbol, H, T <: HList](
-                                                         implicit
-                                                         hMonoid: Lazy[Monoid[H]],
-                                                         tMonoid: Monoid[T]
-                                                       ): Monoid[FieldType[K, H] :: T] =
-      monoidInstance[FieldType[K, H] :: T](field[K](hMonoid.value.empty) :: tMonoid.empty) {
-        (x, y) =>
-          field[K](hMonoid.value.combine(x.head, y.head)) :: tMonoid.combine(x.tail, y.tail)
+        implicit
+        hMonoid: Lazy[Monoid[H]],
+        tMonoid: Monoid[T]
+    ): Monoid[FieldType[K, H] :: T] =
+      monoidInstance[FieldType[K, H] :: T](field[K](hMonoid.value.empty) :: tMonoid.empty) { (x, y) =>
+        field[K](hMonoid.value.combine(x.head, y.head)) :: tMonoid.combine(x.tail, y.tail)
       }
 
     // Here’s the full list of steps:
@@ -160,26 +163,29 @@ object Chap063CaseClassMigrations extends App {
     //    7. use LabelledGeneric to convert the output of step 6 to B
 
     implicit def genericMigration[
-      A, B,
-      ARepr <: HList,
-      BRepr <: HList,
-      Common <: HList,
-      Added <: HList,
-      Unaligned <: HList
+        A,
+        B,
+        ARepr <: HList,
+        BRepr <: HList,
+        CommonRepr <: HList,
+        AddedRepr <: HList,
+        UnalignedRepr <: HList
     ](
-       implicit
-       aGen : LabelledGeneric.Aux[A, ARepr],
-       bGen : LabelledGeneric.Aux[B, BRepr],
-       intersection : hlist.Intersection.Aux[ARepr, BRepr, Common], diff : hlist.Diff.Aux[BRepr, Common, Added],
-       monoid : Monoid[Added],
-       prepend : hlist.Prepend.Aux[Added, Common, Unaligned], align : hlist.Align[Unaligned, BRepr]
-     ): Migration[A, B] =
+        implicit
+        aGen: LabelledGeneric.Aux[A, ARepr],
+        bGen: LabelledGeneric.Aux[B, BRepr],
+        intersection: hlist.Intersection.Aux[ARepr, BRepr, CommonRepr],
+        diff: hlist.Diff.Aux[BRepr, CommonRepr, AddedRepr],
+        monoid: Monoid[AddedRepr],
+        prepend: hlist.Prepend.Aux[AddedRepr, CommonRepr, UnalignedRepr],
+        align: hlist.Align[UnalignedRepr, BRepr]
+    ): Migration[A, B] =
       new Migration[A, B] {
         def apply(a: A): B = {
           val aRepr = aGen.to(a)
           val common = intersection(aRepr)
-          val empty = monoid.empty
-          val unaligned = prepend(empty, common)
+          val defaultValue = monoid.empty
+          val unaligned = prepend(defaultValue, common)
           val bRepr = align(unaligned)
           val b = bGen.from(bRepr)
           b
@@ -199,6 +205,5 @@ object Chap063CaseClassMigrations extends App {
     println(s"IceCreamV2c: $icWithAddedFields")
   }
 
-
-  println("==========\n")
+  prtLine()
 }

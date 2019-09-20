@@ -1,11 +1,12 @@
 package chap06
 
 import shapeless._
+import util._
 
 object Chap064RecordOps extends App {
 
-  println("\n===== 6.4 Record ops =====")
-
+  // ----------------------------------------
+  prtTitle("6.4 Record ops")
 
   case class IceCream(name: String, numCherries: Int, inCone: Boolean)
 
@@ -21,8 +22,8 @@ object Chap064RecordOps extends App {
 
   import shapeless.record._
 
-
-  println("\n----- 6.4.1 Selecting fields -----")
+  // ----------------------------------------
+  prtSubTitle("6.4.1 Selecting fields")
 
   // val name = ic.get('name) // deprecated
   val name = ic.get(Symbol("name"))
@@ -49,8 +50,8 @@ object Chap064RecordOps extends App {
   // ic.get(Symbol("nOmCherries"))
   //       ^
 
-
-  println("\n----- 6.4.2 Updating and removing fields -----")
+  // ----------------------------------------
+  prtSubTitle("6.4.2 Updating and removing fields")
 
   // val updated = ic.updated('numCherries, 3) // deprecated
   val updated: String :: Int :: Boolean :: HNil = ic.updated(Symbol("numCherries"), 3)
@@ -64,14 +65,13 @@ object Chap064RecordOps extends App {
   val updated2: String :: Int :: Boolean :: HNil = ic.updateWith(Symbol("name"))("MASSIVE " + _)
   println(updated2) //=> MASSIVE Sundae :: 1 :: false :: HNil
 
-
-  println("\n----- 6.4.3 Converting to a regular Map -----")
+  // ----------------------------------------
+  prtSubTitle("6.4.3 Converting to a regular Map")
 
   val map = ic.toMap
   // map: Map[Symbol with shapeless.tag.Tagged[_ >: String("inCone") with String("numCherries") with String("name") <: String],Any]
   //          = Map('inCone -> false, 'numCherries -> 1, 'name -> Sundae)
   println(map)
 
-
-  println("==========\n")
+  prtLine()
 }
