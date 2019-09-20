@@ -2,9 +2,12 @@ package chap07
 
 import shapeless._
 
+import util._
+
 object Chap074FoldingWithPoly extends App {
 
-  println("\n===== 7.4 Folding using Poly =====")
+  // ----------------------------------------
+  prtTitle("7.4 Folding using Poly")
 
   object sum extends Poly2 {
 
@@ -19,6 +22,5 @@ object Chap074FoldingWithPoly extends App {
   // summed: Int = 115
   println(summed)
 
-
-  println("==========\n")
+  prtLine()
 }

@@ -3,26 +3,29 @@ package chap07
 import shapeless._
 import shapeless.ops.hlist
 
+import util._
+
 object Chap075TypeClassesWithPoly extends App {
 
-  println("\n===== 7.5 Defining type classes using Poly =====")
-
+  // ----------------------------------------
+  prtTitle("7.5 Defining type classes using Poly")
 
   trait ProductMapper[A, B, P] {
     def apply(a: A): B
   }
 
   implicit def genericProductMapper[
-    A, B,
-    P <: Poly,
-    ARepr <: HList,
-    BRepr <: HList
+      A,
+      B,
+      P <: Poly,
+      ARepr <: HList,
+      BRepr <: HList
   ](
-     implicit
-     aGen: Generic.Aux[A, ARepr],
-     bGen: Generic.Aux[B, BRepr],
-     mapper: hlist.Mapper.Aux[P, ARepr, BRepr]
-   ): ProductMapper[A, B, P] =
+      implicit
+      aGen: Generic.Aux[A, ARepr],
+      bGen: Generic.Aux[B, BRepr],
+      mapper: hlist.Mapper.Aux[P, ARepr, BRepr]
+  ): ProductMapper[A, B, P] =
     new ProductMapper[A, B, P] {
       def apply(a: A): B = {
         val aRepr = aGen.to(a)
@@ -33,16 +36,16 @@ object Chap075TypeClassesWithPoly extends App {
     }
 
   implicit class ProductMapperOps[A](a: A) {
-    class Builder[B] {
-      def apply[P <: Poly](poly: P)(implicit pm: ProductMapper[A, B, P]): B =
+    class Builder[B1] {
+      def apply[P <: Poly](poly: P)(implicit pm: ProductMapper[A, B1, P]): B1 =
         pm.apply(a)
     }
-    def mapTo[B]: Builder[B] = new Builder[B]
+    def mapTo[B2]: Builder[B2] = new Builder[B2]
   }
 
   object conversions extends Poly1 {
     implicit val intCase: Case.Aux[Int, Boolean] = at(_ > 0)
-    implicit val boolCase: Case.Aux[Boolean, Int] = at(if(_) 1 else 0)
+    implicit val boolCase: Case.Aux[Boolean, Int] = at(if (_) 1 else 0)
     implicit val strCase: Case.Aux[String, String] = at(identity)
   }
 
@@ -55,7 +58,5 @@ object Chap075TypeClassesWithPoly extends App {
   val ic2: IceCream2 = ic1.mapTo[IceCream2](conversions)
   println(ic2) //=> IceCream2(Sundae,true,0)
 
-
-
-  println("==========\n")
+  prtLine()
 }

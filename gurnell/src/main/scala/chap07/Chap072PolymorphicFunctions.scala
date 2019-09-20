@@ -1,19 +1,21 @@
 package chap07
 
+import util._
+
 object Chap072PolymorphicFunctions extends App {
 
-  println("\n===== 7.2 Polymorphic functions =====")
+  // ----------------------------------------
+  prtTitle("7.2 Polymorphic functions")
 
-
+  // ----------------------------------------
   {
-    println("\n----- 7.2.1 How Poly works -----")
+    prtSubTitle("7.2.1 How Poly works")
 
     // This is not real shapeless code.
     // It's just for demonstration.
 
     trait Case[POLY, A] {
       type Result
-
       def apply(a: A): Result
     }
 
@@ -27,14 +29,12 @@ object Chap072PolymorphicFunctions extends App {
       implicit def intCase =
         new Case[this.type, Int] {
           type Result = Double
-
           def apply(num: Int): Double = num / 2.0
         }
 
       implicit def stringCase =
         new Case[this.type, String] {
           type Result = Int
-
           def apply(str: String): Int = str.length
         }
     }
@@ -51,16 +51,15 @@ object Chap072PolymorphicFunctions extends App {
     // It's just for demonstration.
   }
 
-
+  // ----------------------------------------
   {
-    println("\n----- 7.2.1 How Poly works (improved using the Aux pattern) -----")
+    prtSubTitle("7.2.1 How Poly works (improved using the Aux pattern)")
 
     // This is not real shapeless code.
     // It's just for demonstration.
 
     trait Case[POLY, A] {
       type Result
-
       def apply(a: A): Result
     }
 
@@ -99,9 +98,9 @@ object Chap072PolymorphicFunctions extends App {
     // It's just for demonstration.
   }
 
-
+  // ----------------------------------------
   {
-    println("\n----- 7.2.2 Poly syntax -----")
+    prtSubTitle("7.2.2 Poly syntax")
 
     import shapeless._
 
@@ -123,9 +122,9 @@ object Chap072PolymorphicFunctions extends App {
     println(applied2)
   }
 
-
+  // ----------------------------------------
   {
-    println("\n----- Polys with more than one parameter -----")
+    prtSubTitle("Polys with more than one parameter")
 
     import shapeless._
 
@@ -142,14 +141,14 @@ object Chap072PolymorphicFunctions extends App {
     // m1: multiply.intIntCase.Result = 12
     println(m1)
 
-    val m2: String = multiply(3, "4")
+    val m2: String = multiply(3, "4X")
     // m2: multiply.intStrCase.Result = 444
     println(m2)
   }
 
-
+  // ----------------------------------------
   {
-    println("\n----- Totaling number in different contexts -----")
+    prtSubTitle("Totaling number in different contexts")
 
     import shapeless._
 
@@ -178,9 +177,9 @@ object Chap072PolymorphicFunctions extends App {
     println(sum3)
   }
 
-
+  // ----------------------------------------
   {
-    println("\n----- Idiosyncrasies of type inference -----")
+    prtSubTitle("Idiosyncrasies of type inference")
 
     import shapeless._
 
@@ -209,6 +208,5 @@ object Chap072PolymorphicFunctions extends App {
     val b3: Double = myPoly.apply[Int](123)
   }
 
-
-  println("==========\n")
+  prtLine()
 }
