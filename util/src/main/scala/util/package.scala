@@ -59,4 +59,12 @@ package object util {
     val line = fill * width
     s"$leading$line$trailing"
   }
+
+  def green(): Unit = print(Console.GREEN)
+  def red(): Unit = print(Console.RED)
+  def blue(): Unit = print(Console.BLUE)
+  def yellow(): Unit = print(Console.YELLOW)
+  def cyan(): Unit = print(Console.CYAN)
+  def magenta(): Unit = print(Console.MAGENTA)
+  def reset(): Unit = print(Console.RESET)
 }
