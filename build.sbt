@@ -4,7 +4,7 @@ val shapeless = "com.chuusai" %% "shapeless" % "2.3.3" withSources () withJavado
 val scalazDerivingShapeless = "org.scalaz" %% "scalaz-deriving-shapeless" % "2.0.0-M1" withSources () withJavadoc ()
 
 val scala212 = "2.12.10"
-val scala213 = "2.13.0"
+val scala213 = "2.13.1"
 val supportedScalaVersions = List(scala212, scala213)
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
