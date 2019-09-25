@@ -3,10 +3,12 @@ package chap08
 import chap02.Chap023GenericCoproducts.{Amber, Green, Red}
 import shapeless._
 
+import util._
+
 object Chap083RandomValueGenerator extends App {
 
-  println("\n===== 8.3 Case study: random value generator =====")
-
+  // ----------------------------------------
+  prtTitle("8.3 Case study: random value generator")
 
   trait Random[A] {
     def get: A
@@ -14,8 +16,8 @@ object Chap083RandomValueGenerator extends App {
 
   def random[A](implicit r: Random[A]): A = r.get
 
-
-  println("\n----- 8.3.1 Simple random values -----")
+  // ----------------------------------------
+  prtSubTitle("8.3.1 Simple random values")
 
   // Instance constructor:
   def createRandom[A](func: () => A): Random[A] =
@@ -35,27 +37,26 @@ object Chap083RandomValueGenerator extends App {
   implicit val booleanRandom: Random[Boolean] =
     createRandom(() => scala.util.Random.nextBoolean)
 
-
-  for(i <- 1 to 3) println(random[Int])
+  for (i <- 1 to 3) println(random[Int])
   // 0
   // 8
   // 9
   println
 
-  for(i <- 1 to 3) println(random[Char])
+  for (i <- 1 to 3) println(random[Char])
   // V
   // N
   // J
   println
 
-
-  println("\n----- 8.3.2 Random products -----")
+  // ----------------------------------------
+  prtSubTitle("8.3.2 Random products")
 
   implicit def genericRandom[A, R](
-                                    implicit
-                                    gen: Generic.Aux[A, R],
-                                    random: Lazy[Random[R]]
-                                  ): Random[A] =
+      implicit
+      gen: Generic.Aux[A, R],
+      random: Lazy[Random[R]]
+  ): Random[A] =
     createRandom(() => {
       val randomValue: R = random.value.get
       val a: A = gen.from(randomValue)
@@ -66,10 +67,10 @@ object Chap083RandomValueGenerator extends App {
     createRandom(() => HNil)
 
   implicit def hlistRandom[H, T <: HList](
-                                           implicit
-                                           hRandom: Lazy[Random[H]],
-                                           tRandom: Random[T]
-                                         ): Random[H :: T] =
+      implicit
+      hRandom: Lazy[Random[H]],
+      tRandom: Random[T]
+  ): Random[H :: T] =
     createRandom { () =>
       val randomHead: H = hRandom.value.get
       val randomTail: T = tRandom.get
@@ -77,18 +78,17 @@ object Chap083RandomValueGenerator extends App {
       hlist
     }
 
-
   case class Cell(col: Char, row: Int)
 
-  for(i <- 1 to 5) println(random[Cell])
+  for (i <- 1 to 5) println(random[Cell])
   // Cell(H,1)
   // Cell(D,4)
   // Cell(D,7)
   // Cell(V,2)
   // Cell(R,4)
 
-
-  println("\n----- 8.3.3 Random coproducts -----")
+  // ----------------------------------------
+  prtSubTitle("8.3.3 Random coproducts")
 
   sealed trait Light
   case object Red extends Light
@@ -104,10 +104,10 @@ object Chap083RandomValueGenerator extends App {
       createRandom(() => throw new Exception("Inconceivable!"))
 
     implicit def coproductRandom[H, T <: Coproduct](
-                                                     implicit
-                                                     hRandom: Lazy[Random[H]],
-                                                     tRandom: Random[T]
-                                                   ): Random[H :+: T] =
+        implicit
+        hRandom: Lazy[Random[H]],
+        tRandom: Random[T]
+    ): Random[H :+: T] =
       createRandom { () =>
         val chooseH: Boolean = scala.util.Random.nextDouble < 0.5
         val res: H :+: T = if (chooseH) Inl(hRandom.value.get) else Inr(tRandom.get)
@@ -133,27 +133,35 @@ object Chap083RandomValueGenerator extends App {
       createRandom(() => throw new Exception("Inconceivable!"))
 
     implicit def coproductRandom[H, T <: Coproduct, L <: Nat](
-                                                               implicit
-                                                               hRandom: Lazy[Random[H]],
-                                                               tRandom: Random[T],
-                                                               tLength: coproduct.Length.Aux[T, L],
-                                                               tLengthAsInt: ToInt[L]
-                                                             ): Random[H :+: T] = {
+        implicit
+        hRandom: Lazy[Random[H]],
+        tRandom: Random[T],
+        tLength: coproduct.Length.Aux[T, L],
+        tLengthAsInt: ToInt[L]
+    ): Random[H :+: T] = {
       createRandom { () =>
         val length: Int = 1 + tLengthAsInt()
         val chooseH: Boolean = scala.util.Random.nextDouble < (1.0 / length)
-        val res: H :+: T = if(chooseH) Inl(hRandom.value.get) else Inr(tRandom.get)
+        val res: H :+: T = if (chooseH) Inl(hRandom.value.get) else Inr(tRandom.get)
         res
       }
     }
 
-    for(i <- 1 to 5) println(random[Light])
+    for (i <- 1 to 5) println(random[Light])
     // Green
     // Red
     // Red
     // Red
     // Green
+
+    println
+    val lights = (0 until 1000).toList.map(_ => random[Light])
+    // println(lights)
+    println("count all:   " + lights.length)
+    println("count Red:   " + lights.filter(_ == Red).length)
+    println("count Amber: " + lights.filter(_ == Amber).length)
+    println("count Green: " + lights.filter(_ == Green).length)
   }
 
-  println("==========\n")
+  prtLine()
 }

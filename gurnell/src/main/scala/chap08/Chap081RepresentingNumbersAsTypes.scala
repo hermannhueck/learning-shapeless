@@ -2,23 +2,25 @@ package chap08
 
 import shapeless._
 
+import util._
+
 object Chap081RepresentingNumbersAsTypes extends App {
 
-  println("\n===== 8.1 Representing numbers as types =====")
-
+  // ----------------------------------------
+  prtTitle("8.1 Representing numbers as types")
 
   import shapeless.{Nat, Succ}
 
   type Zero = Nat._0
-  type One  = Succ[Zero]
-  type Two  = Succ[One]
+  type One = Succ[Zero]
+  type Two = Succ[One]
   // etc...
 
   // Shapeless provides aliases for the first 22 Nats as Nat._N:
 
-  Nat._1
-  Nat._2
-  Nat._3
+  val x1 = Nat._1
+  val x2 = Nat._2
+  val x3 = Nat._3
   // etc...
 
   // Nat has no runti􏰀me semanti􏰀cs. We have to use the ToInt type class to convert a Nat to a runti􏰀me Int:
@@ -40,6 +42,5 @@ object Chap081RepresentingNumbersAsTypes extends App {
   // three: Int = 3
   println(three)
 
-
-  println("==========\n")
+  prtLine()
 }

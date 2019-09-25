@@ -3,10 +3,12 @@ package chap08
 import shapeless._
 import shapeless.ops.{hlist, coproduct, nat}
 
+import util._
+
 object Chap082LengthOfGenericRepresentations extends App {
 
-  println("\n===== 8.2 Length of generic representations =====")
-
+  // ----------------------------------------
+  prtTitle("8.2 Length of generic representations")
 
   val hlistLength = hlist.Length[String :: Int :: Boolean :: HNil]
   // hlistLength: shapeless.ops.hlist.Length[
@@ -28,8 +30,7 @@ object Chap082LengthOfGenericRepresentations extends App {
   // cpl: Int = 2
   println(cpl)
 
-
-  println("----- sizeOf[Product] -----")
+  println("----- sizeOf[Product]")
   trait SizeOf[A] {
     def value: Int
   }
@@ -42,11 +43,11 @@ object Chap082LengthOfGenericRepresentations extends App {
   //  3. a ToInt to convert the Nat to an Int.
 
   implicit def genericSizeOf[A, L <: HList, N <: Nat](
-                                                       implicit
-                                                       generic: Generic.Aux[A, L],
-                                                       size: hlist.Length.Aux[L, N],
-                                                       sizeToInt: nat.ToInt[N]
-                                                     ): SizeOf[A] =
+      implicit
+      generic: Generic.Aux[A, L],
+      size: hlist.Length.Aux[L, N],
+      sizeToInt: nat.ToInt[N]
+  ): SizeOf[A] =
     new SizeOf[A] {
       val value: Int = sizeToInt.apply()
     }
@@ -57,6 +58,5 @@ object Chap082LengthOfGenericRepresentations extends App {
   // size: Int = 3
   println(size)
 
-
-  println("==========\n")
+  prtLine()
 }
