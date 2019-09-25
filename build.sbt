@@ -3,6 +3,9 @@ val projectName = "learning-shapeless"
 val shapeless = "com.chuusai" %% "shapeless" % "2.3.3" withSources () withJavadoc ()
 val scalazDerivingShapeless = "org.scalaz" %% "scalaz-deriving-shapeless" % "2.0.0-M1" withSources () withJavadoc ()
 
+val scalaTest = "org.scalatest" %% "scalatest" % "3.0.8" % Test withSources () withJavadoc ()
+val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.14.2" % Test withSources () withJavadoc ()
+
 val scala212 = "2.12.10"
 val scala213 = "2.13.1"
 val supportedScalaVersions = List(scala212, scala213)
@@ -50,7 +53,11 @@ lazy val gurnell = (project in file("gurnell"))
   .dependsOn(util)
   .settings(
     name := "gurnell",
-    description := "Code from Dave Gurnells book: The Type Astronaut's Guide to Shapeless"
+    description := "Code from Dave Gurnells book: The Type Astronaut's Guide to Shapeless",
+    libraryDependencies ++= Seq(
+      scalaTest,
+      scalaCheck
+    )
   )
 
 lazy val wiki = (project in file("shapeless-wiki"))
