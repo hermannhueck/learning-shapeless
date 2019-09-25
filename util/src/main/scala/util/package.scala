@@ -60,6 +60,19 @@ package object util {
     s"$leading$line$trailing"
   }
 
+  def objectNameSimple(scalaObject: java.lang.Object) = {
+    val cn = scalaObject.getClass().getSimpleName()
+    cn.substring(0, cn.length() - 1)
+  }
+
+  def objectName(scalaObject: java.lang.Object) = {
+    val cn = scalaObject.getClass().getName
+    cn.substring(0, cn.length() - 1)
+  }
+
+  def prtSubTitleObjectName(scalaObject: java.lang.Object) =
+    prtSubTitle(objectName(scalaObject))
+
   def green(): Unit = print(Console.GREEN)
   def red(): Unit = print(Console.RED)
   def blue(): Unit = print(Console.BLUE)
