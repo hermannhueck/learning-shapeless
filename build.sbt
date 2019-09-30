@@ -1,13 +1,13 @@
 val projectName = "learning-shapeless"
 
-val shapeless = "com.chuusai" %% "shapeless" % "2.3.3" withSources () withJavadoc ()
-val scalazDerivingShapeless = "org.scalaz" %% "scalaz-deriving-shapeless" % "2.0.0-M1" withSources () withJavadoc ()
+val shapeless               = "com.chuusai" %% "shapeless"                 % "2.3.3" withSources () withJavadoc ()
+val scalazDerivingShapeless = "org.scalaz"  %% "scalaz-deriving-shapeless" % "2.0.0-M1" withSources () withJavadoc ()
 
-val scalaTest = "org.scalatest" %% "scalatest" % "3.0.8" % Test withSources () withJavadoc ()
+val scalaTest  = "org.scalatest"  %% "scalatest"  % "3.0.8"  % Test withSources () withJavadoc ()
 val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.14.2" % Test withSources () withJavadoc ()
 
-val scala212 = "2.12.10"
-val scala213 = "2.13.1"
+val scala212               = "2.12.10"
+val scala213               = "2.13.1"
 val supportedScalaVersions = List(scala212, scala213)
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
@@ -20,11 +20,11 @@ inThisBuild(
     publish / skip := true,
     scalacOptions ++= Seq(
       "-encoding",
-      "UTF-8", // source files are in UTF-8
-      "-deprecation", // warn about use of deprecated APIs
-      "-unchecked", // warn about unchecked type parameters
-      "-feature" // warn about misused language features
-      // "-language:higherKinds",  // suppress warnings when using higher kinded types
+      "UTF-8",                // source files are in UTF-8
+      "-deprecation",         // warn about use of deprecated APIs
+      "-unchecked",           // warn about unchecked type parameters
+      "-feature",             // warn about misused language features
+      "-language:higherKinds" // suppress warnings when using higher kinded types
       // "-Ypartial-unification",  // (removed in scala 2.13) allow the compiler to unify type constructors of different arities
       // "-Xlint",                 // enable handy linter warnings
       // "-Xfatal-warnings",       // turn compiler warnings into errors
@@ -46,7 +46,7 @@ inThisBuild(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(gurnell, wiki)
+  .aggregate(gurnell, wiki, examples)
   .settings(
     name := projectName
   )
@@ -72,6 +72,20 @@ lazy val wiki = (project in file("shapeless-wiki"))
     )
   )
 
+lazy val examples = (project in file("shapeless-examples"))
+  .dependsOn(util)
+  .settings(
+    name := "shapeless-examples",
+    description := "Shapeless ode examples (copied from): https://github.com/milessabin/shapeless/tree/master/examples/src/main/scala/shapeless/examples",
+    libraryDependencies ++= Seq(
+      "org.scala-lang"         % "scala-compiler"            % scalaVersion.value,
+      "org.scala-lang"         % "scala-reflect"             % scalaVersion.value,
+      "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
+      "com.novocode"           % "junit-interface"           % "0.11" % Test
+    ),
+    scalacOptions += "-language:implicitConversions"
+  )
+
 lazy val util = (project in file("util"))
   .settings(
     name := "util",
@@ -80,3 +94,4 @@ lazy val util = (project in file("util"))
 
 addCommandAlias("grm", "gurnell/runMain")
 addCommandAlias("wrm", "wiki/runMain")
+addCommandAlias("erm", "examples/runMain")
