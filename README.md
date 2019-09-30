@@ -4,6 +4,8 @@ This repo contains (organized in sub-projects) code snippets from:
  
 - Dave Gurnell's book: *The Type Astronaut's Guide to Shapeless*.
 - The feature overview in the Shapeless Wiki
+- Code snippets from some of Miles Sabin's blog posts
+- A copy of the shapeless examples from github (see link below)
 
 ## Resources
 
