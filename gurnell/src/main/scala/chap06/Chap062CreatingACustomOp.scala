@@ -30,13 +30,14 @@ object Chap062CreatingACustomOp extends App {
   ): Penultimate.Aux[L, O] =
     new Penultimate[L] {
       type Out = O
+
       def apply(l: L): O =
         last.apply(init.apply(l))
     }
 
   type BigList = String :: Int :: Boolean :: Double :: HNil
   val bigList: BigList = "foo" :: 123 :: true :: 456.0 :: HNil
-  val blPenultimate = Penultimate[BigList].apply(bigList)
+  val blPenultimate    = Penultimate[BigList].apply(bigList)
   // blPenultimate: Boolean = true
   println(blPenultimate)
 
@@ -48,6 +49,7 @@ object Chap062CreatingACustomOp extends App {
   //                   ^
 
   implicit class PenultimateOps[A](a: A) {
+
     def penultimate(implicit inst: Penultimate[A]): inst.Out =
       inst.apply(a)
   }
@@ -66,6 +68,7 @@ object Chap062CreatingACustomOp extends App {
   ): Penultimate.Aux[A, O] =
     new Penultimate[A] {
       type Out = O
+
       def apply(a: A): O =
         penultimate.apply(generic.to(a))
     }

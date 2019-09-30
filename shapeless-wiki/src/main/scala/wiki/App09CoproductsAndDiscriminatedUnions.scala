@@ -32,12 +32,13 @@ object App09CoproductsAndDiscriminatedUnions extends App {
   // res1: Option[String] = Some(foo)
 
   object size extends Poly1 {
-    implicit def caseInt: Case.Aux[Int, (Int, Int)] = at[Int](i => (i, i))
-    implicit def caseString: Case.Aux[String, (String, Int)] = at[String](s => (s, s.length))
+    implicit def caseInt: Case.Aux[Int, (Int, Int)]             = at[Int](i => (i, i))
+    implicit def caseString: Case.Aux[String, (String, Int)]    = at[String](s => (s, s.length))
     implicit def caseBoolean: Case.Aux[Boolean, (Boolean, Int)] = at[Boolean](b => (b, 1))
   }
 
   println("\nisb map size:")
+
   val mapped: (Int, Int) :+: (String, Int) :+: (Boolean, Int) :+: CNil =
     isb map size
   println(mapped)

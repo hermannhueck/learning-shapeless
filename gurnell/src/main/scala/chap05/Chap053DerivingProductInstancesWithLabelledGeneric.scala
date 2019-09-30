@@ -9,11 +9,11 @@ object Chap053DerivingProductInstancesWithLabelledGeneric extends App {
 
   sealed trait JsonValue
   case class JsonObject(fields: List[(String, JsonValue)]) extends JsonValue
-  case class JsonArray(items: List[JsonValue]) extends JsonValue
-  case class JsonString(value: String) extends JsonValue
-  case class JsonNumber(value: Double) extends JsonValue
-  case class JsonBoolean(value: Boolean) extends JsonValue
-  case object JsonNull extends JsonValue
+  case class JsonArray(items: List[JsonValue])             extends JsonValue
+  case class JsonString(value: String)                     extends JsonValue
+  case class JsonNumber(value: Double)                     extends JsonValue
+  case class JsonBoolean(value: Boolean)                   extends JsonValue
+  case object JsonNull                                     extends JsonValue
 
   trait JsonEncoder[A] {
     def encode(value: A): JsonValue
@@ -27,9 +27,9 @@ object Chap053DerivingProductInstancesWithLabelledGeneric extends App {
     def encode(value: A): JsonValue = func(value)
   }
 
-  implicit val stringEncoder: JsonEncoder[String] = createEncoder(str => JsonString(str))
-  implicit val doubleEncoder: JsonEncoder[Double] = createEncoder(num => JsonNumber(num))
-  implicit val intEncoder: JsonEncoder[Int] = createEncoder(num => JsonNumber(num))
+  implicit val stringEncoder: JsonEncoder[String]   = createEncoder(str => JsonString(str))
+  implicit val doubleEncoder: JsonEncoder[Double]   = createEncoder(num => JsonNumber(num))
+  implicit val intEncoder: JsonEncoder[Int]         = createEncoder(num => JsonNumber(num))
   implicit val booleanEncoder: JsonEncoder[Boolean] = createEncoder(bool => JsonBoolean(bool))
 
   implicit def listEncoder[A](implicit enc: JsonEncoder[A]): JsonEncoder[List[A]] =
@@ -47,9 +47,9 @@ object Chap053DerivingProductInstancesWithLabelledGeneric extends App {
   val iceCreamJsonToGenerate: JsonValue =
     JsonObject(
       List(
-        "name" -> JsonString("Sundae"),
+        "name"        -> JsonString("Sundae"),
         "numCherries" -> JsonNumber(1),
-        "inCone" -> JsonBoolean(false)
+        "inCone"      -> JsonBoolean(false)
       )
     )
 
@@ -77,7 +77,7 @@ object Chap053DerivingProductInstancesWithLabelledGeneric extends App {
       def encode(value: A): JsonObject = fn(value)
     }
 
-  import shapeless.{HList, ::, HNil, Lazy}
+  import shapeless.{::, HList, HNil, Lazy}
 
   // HNil Encoder
   implicit val hnilEncoder: JsonObjectEncoder[HNil] =
@@ -92,7 +92,7 @@ object Chap053DerivingProductInstancesWithLabelledGeneric extends App {
       tEncoder: JsonObjectEncoder[T]
   ): JsonEncoder[H :: T] =
     ???
-  */
+   */
 
   import shapeless.Witness
   import shapeless.labelled.FieldType
@@ -106,7 +106,7 @@ object Chap053DerivingProductInstancesWithLabelledGeneric extends App {
       tEncoder: JsonObjectEncoder[T]
   ): JsonObjectEncoder[FieldType[K, H] :: T] =
     ???
-  */
+   */
 
   /*
   // 3. In the body of our method we’re going to need the value associated with K.
@@ -173,7 +173,7 @@ object Chap053DerivingProductInstancesWithLabelledGeneric extends App {
 
   sealed trait Shape
   final case class Rectangle(width: Double, height: Double) extends Shape
-  final case class Circle(radius: Double) extends Shape
+  final case class Circle(radius: Double)                   extends Shape
 
   val genShape = LabelledGeneric[Shape].to(Circle(1.0))
   // genShape:  Rectangle with shapeless.labelled.KeyTag[Symbol with shapeless.tag.Tagged[String("Rectangle")],Rectangle] :+:
@@ -186,7 +186,7 @@ object Chap053DerivingProductInstancesWithLabelledGeneric extends App {
   //            Circle with KeyTag[Symbol with Tagged["Circle"], Circle] :+:
   //            CNil
 
-  import shapeless.{Coproduct, :+:, CNil, Inl, Inr, Witness, Lazy}
+  import shapeless.{:+:, CNil, Coproduct, Inl, Inr, Lazy, Witness}
   import shapeless.labelled.FieldType
 
   implicit val cnilObjectEncoder: JsonObjectEncoder[CNil] =

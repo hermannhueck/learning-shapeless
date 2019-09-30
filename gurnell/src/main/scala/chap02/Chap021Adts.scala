@@ -12,7 +12,7 @@ object Chap021Adts extends App {
 
   sealed trait Shape
   final case class Rectangle(width: Double, height: Double) extends Shape
-  final case class Circle(radius: Double) extends Shape
+  final case class Circle(radius: Double)                   extends Shape
 
   val rect: Shape = Rectangle(3.0, 4.0)
   val circ: Shape = Circle(1.0)
@@ -30,8 +30,8 @@ object Chap021Adts extends App {
   prtSubTitle("Alternative Encoding with Tuples and Either")
 
   type Rectangle2 = (Double, Double)
-  type Circle2 = Double
-  type Shape2 = Either[Rectangle2, Circle2]
+  type Circle2    = Double
+  type Shape2     = Either[Rectangle2, Circle2]
 
   val rect2: Shape2 = Left((3.0, 4.0))
   val circ2: Shape2 = Right(1.0)

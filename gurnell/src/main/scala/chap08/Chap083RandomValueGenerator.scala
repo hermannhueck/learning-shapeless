@@ -59,7 +59,7 @@ object Chap083RandomValueGenerator extends App {
   ): Random[A] =
     createRandom(() => {
       val randomValue: R = random.value.get
-      val a: A = gen.from(randomValue)
+      val a: A           = gen.from(randomValue)
       a
     })
 
@@ -91,7 +91,7 @@ object Chap083RandomValueGenerator extends App {
   prtSubTitle("8.3.3 Random coproducts")
 
   sealed trait Light
-  case object Red extends Light
+  case object Red   extends Light
   case object Amber extends Light
   case object Green extends Light
 
@@ -110,7 +110,7 @@ object Chap083RandomValueGenerator extends App {
     ): Random[H :+: T] =
       createRandom { () =>
         val chooseH: Boolean = scala.util.Random.nextDouble < 0.5
-        val res: H :+: T = if (chooseH) Inl(hRandom.value.get) else Inr(tRandom.get)
+        val res: H :+: T     = if (chooseH) Inl(hRandom.value.get) else Inr(tRandom.get)
         res
       }
 
@@ -140,9 +140,9 @@ object Chap083RandomValueGenerator extends App {
         tLengthAsInt: ToInt[L]
     ): Random[H :+: T] = {
       createRandom { () =>
-        val length: Int = 1 + tLengthAsInt()
+        val length: Int      = 1 + tLengthAsInt()
         val chooseH: Boolean = scala.util.Random.nextDouble < (1.0 / length)
-        val res: H :+: T = if (chooseH) Inl(hRandom.value.get) else Inr(tRandom.get)
+        val res: H :+: T     = if (chooseH) Inl(hRandom.value.get) else Inr(tRandom.get)
         res
       }
     }

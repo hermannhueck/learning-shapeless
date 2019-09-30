@@ -7,8 +7,8 @@ import util._
 /*
   Dave Gurnells talk: The Type Astronaut's Guide to Shapeless
   https://www.youtube.com/watch?v=Zt6LjUnOcFQ
- */  
-object  AppGenericify extends App {
+ */
+object AppGenericify extends App {
 
   prtTitle("genericify")
 
@@ -19,7 +19,6 @@ object  AppGenericify extends App {
 
   def genericify[A](a: A, gen: Generic[A]): gen.Repr =
     gen.to(a)
-
 
   prtLine()
 }

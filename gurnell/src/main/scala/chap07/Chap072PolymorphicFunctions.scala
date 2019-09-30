@@ -193,7 +193,7 @@ object Chap072PolymorphicFunctions extends App {
     }
 
     // compiles:
-    val a = myPoly.apply(123)
+    val a          = myPoly.apply(123)
     val b1: Double = a
 
     // doesn't compiles:

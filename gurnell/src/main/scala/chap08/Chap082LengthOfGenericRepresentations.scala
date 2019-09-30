@@ -1,7 +1,7 @@
 package chap08
 
 import shapeless._
-import shapeless.ops.{hlist, coproduct, nat}
+import shapeless.ops.{coproduct, hlist, nat}
 
 import util._
 
@@ -31,6 +31,7 @@ object Chap082LengthOfGenericRepresentations extends App {
   println(cpl)
 
   println("----- sizeOf[Product]")
+
   trait SizeOf[A] {
     def value: Int
   }

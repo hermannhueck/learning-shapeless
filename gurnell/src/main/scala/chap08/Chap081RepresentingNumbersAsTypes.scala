@@ -12,8 +12,8 @@ object Chap081RepresentingNumbersAsTypes extends App {
   import shapeless.{Nat, Succ}
 
   type Zero = Nat._0
-  type One = Succ[Zero]
-  type Two = Succ[One]
+  type One  = Succ[Zero]
+  type Two  = Succ[One]
   // etc...
 
   // Shapeless provides aliases for the first 22 Nats as Nat._N:

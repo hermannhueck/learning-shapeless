@@ -53,7 +53,6 @@ object Chap022ProductEncodings extends App {
   // iceCream2: IceCream = IceCream(Sundae,1,false)
   println(iceCream2)
 
-
   println
   case class Employee(name: String, number: Int, manager: Boolean)
   // Create an employee from an ice cream:
@@ -61,9 +60,8 @@ object Chap022ProductEncodings extends App {
   // employee: Employee = Employee(Sundae,1,false)
   println(employee)
 
-
   println
-  val tupleGen = Generic[(String, Int, Boolean)]
+  val tupleGen             = Generic[(String, Int, Boolean)]
   val hlist: tupleGen.Repr = tupleGen.to(("Hello", 123, true))
   // res4: tupleGen.Repr = Hello :: 123 :: true :: HNil
   println(hlist)
@@ -72,10 +70,33 @@ object Chap022ProductEncodings extends App {
   // res5: (String, Int, Boolean) = (Hello,123,true)
   println(tuple)
 
-
   // ----------------------------------------
   prtSubTitle("Works with more than 22 fields")
-  case class BigData(a:Int,b:Int,c:Int,d:Int,e:Int,f:Int,g:Int,h:Int,i:Int,j:Int, k:Int,l:Int,m:Int,n:Int,o:Int,p:Int,q:Int,r:Int,s:Int,t:Int,u:Int,v:Int,w:Int)
+  case class BigData(
+      a: Int,
+      b: Int,
+      c: Int,
+      d: Int,
+      e: Int,
+      f: Int,
+      g: Int,
+      h: Int,
+      i: Int,
+      j: Int,
+      k: Int,
+      l: Int,
+      m: Int,
+      n: Int,
+      o: Int,
+      p: Int,
+      q: Int,
+      r: Int,
+      s: Int,
+      t: Int,
+      u: Int,
+      v: Int,
+      w: Int
+  )
 
   val bigData: BigData = BigData(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23)
   println(bigData)
@@ -86,7 +107,6 @@ object Chap022ProductEncodings extends App {
   val bigData2: BigData = Generic[BigData].from(bdHList)
   // res6: BigData = BigData (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23)
   println(bigData2)
-
 
   prtLine()
 }

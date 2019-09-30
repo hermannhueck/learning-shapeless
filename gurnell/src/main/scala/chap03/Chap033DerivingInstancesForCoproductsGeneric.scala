@@ -83,10 +83,9 @@ object Chap033DerivingInstancesForCoproductsGeneric extends App {
       CsvEncoder.instance(a => encoder.encode(gen.to(a)))
   }
 
-  
   sealed trait Shape
   final case class Rectangle(width: Double, height: Double) extends Shape
-  final case class Circle(radius: Double) extends Shape
+  final case class Circle(radius: Double)                   extends Shape
 
   val shapes: List[Shape] = List(
     Rectangle(3.0, 4.0),

@@ -5,7 +5,7 @@ import shapeless.{:+:, ::, CNil, Coproduct, Generic, HList, HNil, Inl, Inr}
 
 import util._
 
-object  Chap032bDerivingInstancesForProductsGeneric extends App {
+object Chap032bDerivingInstancesForProductsGeneric extends App {
 
   // ----------------------------------------
   prtTitle("3.2 Deriving instances for products (generic instances)")
@@ -18,7 +18,9 @@ object  Chap032bDerivingInstancesForProductsGeneric extends App {
 
   def writeCsv[A](values: List[A])(implicit encoder: CsvEncoder[A]): String =
     values
-      .map { value => encoder.encode(value).mkString(",") }
+      .map { value =>
+        encoder.encode(value).mkString(",")
+      }
       .mkString("\n")
 
   object CsvEncoder {
@@ -40,19 +42,22 @@ object  Chap032bDerivingInstancesForProductsGeneric extends App {
       instance(num => List(num.toString))
 
     implicit val booleanEncoder: CsvEncoder[Boolean] =
-      instance(bool => List(if(bool) "yes" else "no"))
+      instance(bool => List(if (bool) "yes" else "no"))
 
     implicit val hnilEncoder: CsvEncoder[HNil] =
       instance(hnil => Nil)
 
-    implicit def hlistEncoder[H, T <: HList](implicit hEncoder: CsvEncoder[H], tEncoder: CsvEncoder[T]): CsvEncoder[H :: T] =
-      instance { case h :: t =>
+    implicit def hlistEncoder[H, T <: HList](
+        implicit hEncoder: CsvEncoder[H],
+        tEncoder: CsvEncoder[T]
+    ): CsvEncoder[H :: T] =
+      instance {
+        case h :: t =>
           hEncoder.encode(h) ++ tEncoder.encode(t)
       }
 
     // Taken together, these five instances allow us to summon CsvEncoders for any HList involving Strings, Ints, and Booleans.
   }
-
 
   // ----------------------------------------
   prtSubTitle("3.2.1 Instances for HLists")
@@ -62,7 +67,6 @@ object  Chap032bDerivingInstancesForProductsGeneric extends App {
   val encodedHList: List[String] = reprEncoder.encode("abc" :: 123 :: true :: HNil)
   // res9: List[String] = List(abc, 123, yes)
   println(encodedHList)
-
 
   // ----------------------------------------
   prtSubTitle("3.2.2 Instances for concrete products", leading = "\n")
@@ -85,8 +89,7 @@ object  Chap032bDerivingInstancesForProductsGeneric extends App {
 
   val employeesWithIceCreams: List[(Employee, IceCream)] = employees zip iceCreams
 
-
-/*
+  /*
   implicit def genericEncoder[A](
                                   implicit
                                   gen: Generic[A],
@@ -96,9 +99,9 @@ object  Chap032bDerivingInstancesForProductsGeneric extends App {
   // illegal dependent method type: parameter may only be referenced in a subsequent parameter section
   //          gen: Generic[A],
   //          ^
-*/
+   */
 
-/*
+  /*
   // this CsvEncoder can handle any case class
   implicit def genericEncoder[A, R](
                                      implicit
@@ -106,31 +109,35 @@ object  Chap032bDerivingInstancesForProductsGeneric extends App {
                                      encoder: CsvEncoder[R]
                                    ): CsvEncoder[A] =
     CsvEncoder.instance(a => encoder.encode(gen.to(a)))
-*/
+   */
 
   // CsvEncoder simplified using the Aux pattern
   implicit def genericEncoder[A, R](
-                                     implicit
-                                     gen: Generic.Aux[A, R],
-                                     encoder: CsvEncoder[R]
-                                   ): CsvEncoder[A] =
+      implicit
+      gen: Generic.Aux[A, R],
+      encoder: CsvEncoder[R]
+  ): CsvEncoder[A] =
     CsvEncoder.instance(a => encoder.encode(gen.to(a)))
 
   println(
     writeCsv(iceCreams)(
       genericEncoder(
         Generic[IceCream],
-        CsvEncoder.hlistEncoder(CsvEncoder.stringEncoder,
-          CsvEncoder.hlistEncoder(CsvEncoder.intEncoder,
-            CsvEncoder.hlistEncoder(CsvEncoder.booleanEncoder,
-              CsvEncoder.hnilEncoder)))))
+        CsvEncoder.hlistEncoder(
+          CsvEncoder.stringEncoder,
+          CsvEncoder.hlistEncoder(
+            CsvEncoder.intEncoder,
+            CsvEncoder.hlistEncoder(CsvEncoder.booleanEncoder, CsvEncoder.hnilEncoder)
+          )
+        )
+      )
+    )
   ) // is the same as:
   println
   println(writeCsv(iceCreams))
 
   println
   println(writeCsv(employees))
-
 
   implicit def pairEncoder[A, B](implicit aEncoder: CsvEncoder[A], bEncoder: CsvEncoder[B]): CsvEncoder[(A, B)] =
     CsvEncoder.instance {
@@ -139,7 +146,6 @@ object  Chap032bDerivingInstancesForProductsGeneric extends App {
 
   println
   println(writeCsv(employeesWithIceCreams))
-
 
   // ----------------------------------------
   prtSubTitle("3.2.3 So what are the downsides? Two typical errors ...", leading = "\n")
@@ -154,7 +160,6 @@ object  Chap032bDerivingInstancesForProductsGeneric extends App {
 
   // Foo should be a case class
 
-
   println("2. One of the case class params has no CsvEncoder instance.")
   import java.util.Date
   case class Booking(room: String, date: Date)
@@ -165,7 +170,6 @@ object  Chap032bDerivingInstancesForProductsGeneric extends App {
   //         ^
 
   // needs an implicit CsvEncoder for java.util.Date
-
 
   prtLine()
 }

@@ -17,7 +17,6 @@ object Chap051LiteralTypes213 extends App {
   // implicitly[theAnswer2.type =:= 42]
   // not allowed as theAnswer2 is a var, not a stable type
 
-
   // ----------------------------------------
   prtSubTitle("tagging an Int with type Cherries")
 

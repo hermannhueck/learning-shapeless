@@ -24,7 +24,7 @@ object Chap073MapAndFlatMapWithPoly extends App {
   }
 
   val values = (10 :: "hello" :: true :: HNil)
-  val sizes = values.map(sizeOf)
+  val sizes  = values.map(sizeOf)
   // sizes: Int :: Int :: Int :: shapeless.HNil = 10 :: 5 :: 1 :: HNil
   println(s"values:  $values")
   println(s"sizes:   $sizes")

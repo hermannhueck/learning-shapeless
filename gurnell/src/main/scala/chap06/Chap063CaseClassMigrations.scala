@@ -33,6 +33,7 @@ object Chap063CaseClassMigrations extends App {
   }
 
   implicit class MigrationOps[A](a: A) {
+
     def migrateTo[B](implicit migration: Migration[A, B]): B =
       migration.apply(a)
   }
@@ -59,7 +60,7 @@ object Chap063CaseClassMigrations extends App {
         def apply(a: A): B = {
           val aRepr = aGen.to(a)
           val bRepr = intersection.apply(aRepr)
-          val b = bGen.from(bRepr)
+          val b     = bGen.from(bRepr)
           b
         }
       }
@@ -88,10 +89,10 @@ object Chap063CaseClassMigrations extends App {
     ): Migration[A, B] =
       new Migration[A, B] {
         def apply(a: A): B = {
-          val aRepr = aGen.to(a)
+          val aRepr     = aGen.to(a)
           val unaligned = intersection.apply(aRepr)
-          val bRepr = align.apply(unaligned)
-          val b = bGen.from(bRepr)
+          val bRepr     = align.apply(unaligned)
+          val b         = bGen.from(bRepr)
           b
         }
       }
@@ -128,7 +129,7 @@ object Chap063CaseClassMigrations extends App {
 
       def monoidInstance[A](zero: A)(f: (A, A) => A): Monoid[A] =
         new Monoid[A] {
-          def empty: A = zero
+          def empty: A               = zero
           def combine(x: A, y: A): A = f(x, y)
         }
 
@@ -182,12 +183,12 @@ object Chap063CaseClassMigrations extends App {
     ): Migration[A, B] =
       new Migration[A, B] {
         def apply(a: A): B = {
-          val aRepr = aGen.to(a)
-          val common = intersection(aRepr)
+          val aRepr        = aGen.to(a)
+          val common       = intersection(aRepr)
           val defaultValue = monoid.empty
-          val unaligned = prepend(defaultValue, common)
-          val bRepr = align(unaligned)
-          val b = bGen.from(bRepr)
+          val unaligned    = prepend(defaultValue, common)
+          val bRepr        = align(unaligned)
+          val b            = bGen.from(bRepr)
           b
         }
       }

@@ -1,10 +1,10 @@
 package chap04
 
-import shapeless.{::, HList, HNil, the}
+import shapeless.{::, the, HList, HNil}
 
 import util._
 
-object  Chap042DependentlyTypedFunctions extends App {
+object Chap042DependentlyTypedFunctions extends App {
 
   // ----------------------------------------
   prtTitle("4.2 Dependently typed functions")
@@ -22,7 +22,7 @@ object  Chap042DependentlyTypedFunctions extends App {
           type Out
           def apply(in: L): Out
         }
-    */
+     */
 
     import shapeless.ops.hlist.Last
     import shapeless.ops.hlist.Last.Aux
@@ -40,7 +40,6 @@ object  Chap042DependentlyTypedFunctions extends App {
     val la2: String = last2(321 :: "bar" :: HNil)
     // la2: last2.Out = bar
     println(la2)
-
 
     // Last[HNil]
     // <console>:15: error: Implicit not found: shapeless.Ops.Last[ shapeless.HNil]. shapeless.HNil is empty, so there is no last element.
@@ -83,7 +82,6 @@ object  Chap042DependentlyTypedFunctions extends App {
     """)
   }
 
-
   // ----------------------------------------
   prtSubTitle("Second")
 
@@ -97,17 +95,17 @@ object  Chap042DependentlyTypedFunctions extends App {
 
     object Second {
 
-      type Aux[L <: HList, O] = Second[L] {type Out = O}
+      type Aux[L <: HList, O] = Second[L] { type Out = O }
 
       def apply[L <: HList](implicit inst: Second[L]): Aux[L, inst.Out] = inst // summoner
     }
 
     implicit def hlistSecond[A, B, Rest <: HList]: Second.Aux[A :: B :: Rest, B] = new Second[A :: B :: Rest] {
 
-        type Out = B
+      type Out = B
 
-        def apply(hlist: A :: B :: Rest): B = hlist.tail.head
-      }
+      def apply(hlist: A :: B :: Rest): B = hlist.tail.head
+    }
 
     val second1: Second.Aux[String :: Boolean :: Int :: HNil, Boolean] = Second[String :: Boolean :: Int :: HNil]
     // second1: Second[String :: Boolean :: Int :: shapeless.HNil]{type Out = Boolean} = $anon$1@3cc9a748

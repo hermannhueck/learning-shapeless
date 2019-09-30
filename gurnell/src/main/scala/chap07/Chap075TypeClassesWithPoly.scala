@@ -27,16 +27,19 @@ object Chap075TypeClassesWithPoly extends App {
       mapper: hlist.Mapper.Aux[P, ARepr, BRepr]
   ): ProductMapper[A, B, P] =
     new ProductMapper[A, B, P] {
+
       def apply(a: A): B = {
         val aRepr = aGen.to(a)
         val bRepr = mapper.apply(aRepr)
-        val b = bGen.from(bRepr)
+        val b     = bGen.from(bRepr)
         b
       }
     }
 
   implicit class ProductMapperOps[A](a: A) {
+
     class Builder[B1] {
+
       def apply[P <: Poly](poly: P)(implicit pm: ProductMapper[A, B1, P]): B1 =
         pm.apply(a)
     }
@@ -44,8 +47,8 @@ object Chap075TypeClassesWithPoly extends App {
   }
 
   object conversions extends Poly1 {
-    implicit val intCase: Case.Aux[Int, Boolean] = at(_ > 0)
-    implicit val boolCase: Case.Aux[Boolean, Int] = at(if (_) 1 else 0)
+    implicit val intCase: Case.Aux[Int, Boolean]   = at(_ > 0)
+    implicit val boolCase: Case.Aux[Boolean, Int]  = at(if (_) 1 else 0)
     implicit val strCase: Case.Aux[String, String] = at(identity)
   }
 

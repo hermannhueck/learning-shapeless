@@ -98,13 +98,13 @@ object App02HeterogeniousLists extends App {
 
   trait Fruit
   case class Apple() extends Fruit
-  case class Pear() extends Fruit
+  case class Pear()  extends Fruit
 
   type FFFF = Fruit :: Fruit :: Fruit :: Fruit :: HNil
   type APAP = Apple :: Pear :: Apple :: Pear :: HNil
 
   val a: Apple = Apple()
-  val p: Pear = Pear()
+  val p: Pear  = Pear()
 
   val apap: APAP = a :: p :: a :: p :: HNil
   println(s"Apples and Pears: $apap")

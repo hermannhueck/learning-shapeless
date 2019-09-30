@@ -6,7 +6,7 @@ package chap04.propensive
  */
 import util._
 
-object  AppJoinerParam extends App {
+object AppJoinerParam extends App {
 
   prtTitle("Joiner (return type as type parameter)")
 
@@ -21,7 +21,6 @@ object  AppJoinerParam extends App {
 
   def doJoin[E, R](xs: Seq[E])(implicit j: Joiner[E, R]): R =
     j.join(xs)
-
 
   // see the return type: it refines type R as String
   implicit val charJoiner: Joiner[Char, String] =

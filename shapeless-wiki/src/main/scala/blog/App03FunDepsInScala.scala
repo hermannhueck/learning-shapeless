@@ -45,9 +45,9 @@ object App03FunDepsInScala extends App {
     // Type annotations solely to verify that the correct result type
     // has been inferred
 
-    val r1: Matrix = mult(new Matrix {}, new Matrix {}) // Compiles
-    val r2: Vector = mult(new Matrix {}, new Vector {}) // Compiles
-    val r3: Matrix = mult(new Matrix {}, 2) // Compiles
+    val r1: Matrix = mult(new Matrix    {}, new Matrix {}) // Compiles
+    val r2: Vector = mult(new Matrix    {}, new Vector {}) // Compiles
+    val r3: Matrix = mult(new Matrix    {}, 2) // Compiles
     val r4: Matrix = mult(2, new Matrix {}) // Compiles
 
     // This next one doesn't compile ...
@@ -85,9 +85,9 @@ object App03FunDepsInScala extends App {
     def mult[A, B, C](a: A, b: B)(implicit instance: MultDep[A, B, C]): C =
       instance(a, b)
 
-    val r1: Matrix = mult(new Matrix {}, new Matrix {}) // Compiles
-    val r2: Vector = mult(new Matrix {}, new Vector {}) // Compiles
-    val r3: Matrix = mult(new Matrix {}, 2) // Compiles
+    val r1: Matrix = mult(new Matrix    {}, new Matrix {}) // Compiles
+    val r2: Vector = mult(new Matrix    {}, new Vector {}) // Compiles
+    val r3: Matrix = mult(new Matrix    {}, 2) // Compiles
     val r4: Matrix = mult(2, new Matrix {}) // Compiles
 
     // This next one doesn't compile ...

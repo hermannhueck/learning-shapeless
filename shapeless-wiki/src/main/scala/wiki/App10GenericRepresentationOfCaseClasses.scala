@@ -28,6 +28,7 @@ object App10GenericRepresentationOfCaseClasses extends App {
   // foo: Foo = Foo(23,foo,true)
 
   println("\n>>> converted to HList:")
+
   val hlist: Int :: String :: Boolean :: HNil =
     fooGen.to(foo)
   // hlist: fooGen.Repr = 23 :: foo :: true :: HNil
@@ -39,6 +40,7 @@ object App10GenericRepresentationOfCaseClasses extends App {
   // modifiedHList: Int :: String :: Boolean :: HNil = 13 :: foo :: true :: HNil
 
   println("\n>>> converted back to case class instance:")
+
   val modifiedFoo: Foo =
     fooGen.from(modifiedHList)
   // modifiedFoo: Foo = Foo(13,foo,true)
@@ -52,7 +54,7 @@ object App10GenericRepresentationOfCaseClasses extends App {
   prtTitle("Simple recursive case class family:")
 
   sealed trait Tree[T]
-  case class Leaf[T](t: T) extends Tree[T]
+  case class Leaf[T](t: T)                          extends Tree[T]
   case class Node[T](left: Tree[T], right: Tree[T]) extends Tree[T]
 
   // Polymorphic function which adds 1 to any Int and is the identity

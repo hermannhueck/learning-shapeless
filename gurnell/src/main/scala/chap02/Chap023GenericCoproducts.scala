@@ -23,13 +23,12 @@ object Chap023GenericCoproducts extends App {
   // green: Light = Inr(Inr(Inl(Green())))
   println(green)
 
-
   // ----------------------------------------
   prtSubTitle("2.3.1 Switching encodings using Generic")
 
   sealed trait Shape
   final case class Rectangle(width: Double, height: Double) extends Shape
-  final case class Circle(radius: Double) extends Shape
+  final case class Circle(radius: Double)                   extends Shape
 
   val gen = Generic[Shape]
   // gen: shapeless.Generic[Shape]{type Repr = Rectangle :+: Circle :+: shapeless.CNil} = anon$macro$1$1@5c6286ac
@@ -40,6 +39,5 @@ object Chap023GenericCoproducts extends App {
   val coprCircle = gen.to(Circle(1.0))
   println(coprCircle)
 
-  
   prtLine()
 }

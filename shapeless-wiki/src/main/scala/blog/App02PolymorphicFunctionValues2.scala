@@ -11,10 +11,10 @@ object App02PolymorphicFunctionValues2 extends App {
   // ----------------------------------------
   prtTitle("First-class polymorphic function values in shapeless (2 of 3) — Natural Transformations in Scala")
 
-  def singleton[T](t: T): Set[T] = Set(t)
-  def identity[T](t: T): T = t
+  def singleton[T](t: T): Set[T]           = Set(t)
+  def identity[T](t: T): T                 = t
   def headOption[T](l: List[T]): Option[T] = l.headOption
-  def size[T](t: T): Int = ???
+  def size[T](t: T): Int                   = ???
 
   {
     // Recall from the preceeding article that the explanation for Scala’s function values being monomorphic is
@@ -228,10 +228,10 @@ object App02PolymorphicFunctionValues2 extends App {
     // because those types will never be inferred for F[_] or G[_]. We can help out the Scala compiler
     // with a few additional implicit conversions to cover all the relevant permutations of those cases,
 
-    implicit def polyToMono2[G[_], T](f: Id ~> G): T => G[T] = f(_)
-    implicit def polyToMono3[F[_], T](f: F ~> Id): F[T] => T = f(_)
-    implicit def polyToMono4[T](f: Id ~> Id): T => T = f[T](_)
-    implicit def polyToMono5[G, T](f: Id ~> Const[G]#λ): T => G = f(_)
+    implicit def polyToMono2[G[_], T](f: Id ~> G): T => G[T]            = f(_)
+    implicit def polyToMono3[F[_], T](f: F ~> Id): F[T] => T            = f(_)
+    implicit def polyToMono4[T](f: Id ~> Id): T => T                    = f[T](_)
+    implicit def polyToMono5[G, T](f: Id ~> Const[G]#λ): T => G         = f(_)
     implicit def polyToMono6[F[_], G, T](f: F ~> Const[G]#λ): F[T] => G = f(_)
 
     List(1, 2, 3) map singleton

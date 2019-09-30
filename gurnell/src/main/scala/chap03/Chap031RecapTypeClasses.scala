@@ -21,6 +21,7 @@ object Chap031RecapTypeClasses extends App {
   // CsvEncoder instance for the custom data type:
   implicit val employeeEncoder: CsvEncoder[Employee] =
     new CsvEncoder[Employee] {
+
       def encode(e: Employee): List[String] =
         List(
           e.name,
@@ -52,6 +53,7 @@ object Chap031RecapTypeClasses extends App {
 
   implicit val iceCreamEncoder: CsvEncoder[IceCream] =
     new CsvEncoder[IceCream] {
+
       def encode(i: IceCream): List[String] =
         List(
           i.name,
@@ -80,6 +82,7 @@ object Chap031RecapTypeClasses extends App {
       bEncoder: CsvEncoder[B]
   ): CsvEncoder[(A, B)] =
     new CsvEncoder[(A, B)] {
+
       def encode(pair: (A, B)): List[String] = {
         val (a, b) = pair
         aEncoder.encode(a) ++ bEncoder.encode(b)
@@ -87,7 +90,7 @@ object Chap031RecapTypeClasses extends App {
     }
 
   val pairs: List[(Employee, IceCream)] = employees zip iceCreams
-  val encodedPairs: String = writeCsv(pairs)
+  val encodedPairs: String              = writeCsv(pairs)
   println(encodedPairs)
 
   // ----------------------------------------

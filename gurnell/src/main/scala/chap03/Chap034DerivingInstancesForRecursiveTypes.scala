@@ -78,8 +78,8 @@ object Chap034DerivingInstancesForRecursiveTypes extends App {
       case Inr(t) => tEncoder.encode(t)
     }
 
-     // generic CsvEncoder simplified using the Aux pattern
-   // needs Lazy for recursive structures like Tree
+    // generic CsvEncoder simplified using the Aux pattern
+    // needs Lazy for recursive structures like Tree
     implicit def genericEncoder[A, R](
         implicit
         gen: Generic.Aux[A, R],
@@ -89,10 +89,9 @@ object Chap034DerivingInstancesForRecursiveTypes extends App {
     }
   }
 
-
   sealed trait Tree[A]
   case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
-  case class Leaf[A](value: A) extends Tree[A]
+  case class Leaf[A](value: A)                        extends Tree[A]
 
   // ----------------------------------------
   prtSubTitle("3.4.1 Implicit divergence without Lazy")

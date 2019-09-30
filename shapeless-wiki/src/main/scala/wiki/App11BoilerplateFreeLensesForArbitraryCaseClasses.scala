@@ -18,11 +18,11 @@ object App11BoilerplateFreeLensesForArbitraryCaseClasses extends App {
   case class Person(name: String, age: Int, address: Address)
 
   // Some lenses over Person/Address ...
-  val nameLens: Lens[Person, String] = lens[Person] >> Symbol("name")
-  val ageLens: Lens[Person, Int] = lens[Person] >> Symbol("age")
+  val nameLens: Lens[Person, String]     = lens[Person] >> Symbol("name")
+  val ageLens: Lens[Person, Int]         = lens[Person] >> Symbol("age")
   val addressLens: Lens[Person, Address] = lens[Person] >> Symbol("address")
-  val streetLens: Lens[Person, String] = lens[Person] >> Symbol("address") >> Symbol("street")
-  val cityLens: Lens[Person, String] = lens[Person] >> Symbol("address") >> Symbol("city")
+  val streetLens: Lens[Person, String]   = lens[Person] >> Symbol("address") >> Symbol("street")
+  val cityLens: Lens[Person, String]     = lens[Person] >> Symbol("address") >> Symbol("city")
   val postcodeLens: Lens[Person, String] = lens[Person] >> Symbol("address") >> Symbol("postcode")
 
   println("\n>>> person:")

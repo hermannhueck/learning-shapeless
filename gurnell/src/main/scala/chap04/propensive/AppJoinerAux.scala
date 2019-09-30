@@ -6,7 +6,7 @@ package chap04.propensive
  */
 import util._
 
-object  AppJoinerAux extends App {
+object AppJoinerAux extends App {
 
   prtTitle("Joiner (return type as type member - using the Aux pattern)")
 
@@ -26,7 +26,6 @@ object  AppJoinerAux extends App {
 
   def doJoin[T, R](xs: Seq[T])(implicit j: Joiner.Aux[T, R]): R =
     j.join(xs)
-
 
   // see the return type: it refines type R as String
   implicit val charJoiner: Joiner.Aux[Char, String] =

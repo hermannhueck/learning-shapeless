@@ -2,7 +2,7 @@ package chap03
 
 import shapeless.Generic.Aux
 import shapeless.{::, Generic, HList, HNil}
-import shapeless.{Coproduct, :+:, CNil, Inl, Inr}
+import shapeless.{:+:, CNil, Coproduct, Inl, Inr}
 
 import util._
 
@@ -19,7 +19,9 @@ object Chap032aDerivingInstancesForProductsSpecific extends App {
 
   def writeCsv[A](values: List[A])(implicit encoder: CsvEncoder[A]): String =
     values
-      .map { value => encoder.encode(value).mkString(",") }
+      .map { value =>
+        encoder.encode(value).mkString(",")
+      }
       .mkString("\n")
 
   object CsvEncoder {
@@ -41,19 +43,22 @@ object Chap032aDerivingInstancesForProductsSpecific extends App {
       instance(num => List(num.toString))
 
     implicit val booleanEncoder: CsvEncoder[Boolean] =
-      instance(bool => List(if(bool) "yes" else "no"))
+      instance(bool => List(if (bool) "yes" else "no"))
 
     implicit val hnilEncoder: CsvEncoder[HNil] =
       instance(hnil => Nil)
 
-    implicit def hlistEncoder[H, T <: HList](implicit hEncoder: CsvEncoder[H], tEncoder: CsvEncoder[T]): CsvEncoder[H :: T] =
-      instance { case h :: t =>
+    implicit def hlistEncoder[H, T <: HList](
+        implicit hEncoder: CsvEncoder[H],
+        tEncoder: CsvEncoder[T]
+    ): CsvEncoder[H :: T] =
+      instance {
+        case h :: t =>
           hEncoder.encode(h) ++ tEncoder.encode(t)
       }
 
     // Taken together, these five instances allow us to summon CsvEncoders for any HList involving Strings, Ints, and Booleans.
   }
-
 
   // ----------------------------------------
   prtSubTitle("3.2.1 Instances for HLists")
@@ -63,7 +68,6 @@ object Chap032aDerivingInstancesForProductsSpecific extends App {
   val encodedHList: List[String] = reprEncoder.encode("abc" :: 123 :: true :: HNil)
   // res9: List[String] = List(abc, 123, yes)
   println(encodedHList)
-
 
   // ----------------------------------------
   prtSubTitle("3.2.2 Instances for concrete products")
@@ -86,17 +90,14 @@ object Chap032aDerivingInstancesForProductsSpecific extends App {
 
   val employeesWithIceCrams: List[(Employee, IceCream)] = employees zip iceCreams
 
-
-
   implicit val iceCreamEncoder: CsvEncoder[IceCream] = {
     val gen: Aux[IceCream, String :: Int :: Boolean :: HNil] = Generic[IceCream]
-    val enc: CsvEncoder[String :: Int :: Boolean :: HNil] = CsvEncoder[gen.Repr]
+    val enc: CsvEncoder[String :: Int :: Boolean :: HNil]    = CsvEncoder[gen.Repr]
     CsvEncoder.instance(iceCream => enc.encode(gen.to(iceCream)))
   }
 
   val encodedIceCreams: String = writeCsv(iceCreams)
   println(encodedIceCreams)
-
 
   println
 
@@ -109,7 +110,6 @@ object Chap032aDerivingInstancesForProductsSpecific extends App {
   val encodedEmployees: String = writeCsv(employees)
   println(encodedEmployees)
 
-
   println
 
   implicit def pairEncoder[A, B](implicit aEncoder: CsvEncoder[A], bEncoder: CsvEncoder[B]): CsvEncoder[(A, B)] =
@@ -119,7 +119,6 @@ object Chap032aDerivingInstancesForProductsSpecific extends App {
 
   val encodedPairs: String = writeCsv(employeesWithIceCrams)
   println(encodedPairs)
-
 
   prtLine()
 }

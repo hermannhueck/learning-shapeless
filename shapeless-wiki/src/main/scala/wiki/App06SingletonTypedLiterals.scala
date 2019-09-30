@@ -49,7 +49,7 @@ object App06SingletonTypedLiterals extends App {
   // wTrue: shapeless.Witness{type T = Boolean(true)} = $1$$1@212b9eca
   // wFalse: shapeless.Witness{type T = Boolean(false)} = $2$$1@36c5f0c9
 
-  type True = wTrue.T
+  type True  = wTrue.T
   type False = wFalse.T
 
   trait Select[B] { type Out }
@@ -110,7 +110,7 @@ object App06SingletonTypedLiterals extends App {
     type Error = Record.`"k1" -> String, "k2" -> Long`.T
 
     // That seems to work...
-    val err1 = "k1" ->> "1" :: "k2" ->> 1L :: HNil
+    val err1        = "k1" ->> "1" :: "k2" ->> 1L :: HNil
     val err2: Error = "k1" ->> "1" :: "k2" ->> 1L :: HNil
 
     println(testF(err1.head)) // OK
