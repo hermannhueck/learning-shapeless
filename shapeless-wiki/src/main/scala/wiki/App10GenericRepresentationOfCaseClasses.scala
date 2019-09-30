@@ -1,14 +1,15 @@
 package wiki
 
 import shapeless._
+import util._
 
 /*
   https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0#generic-representation-of-sealed-families-of-case-classes
  */
 object App10GenericRepresentationOfCaseClasses extends App {
 
-  println("\n===== Generic representation of (sealed families of) case classes =======")
-
+  // ----------------------------------------
+  prtTitle("Generic representation of (sealed families of) case classes")
 
   // The Isos of earlier shapeless releases have been completely reworked as the new Generic type,
   // which closely resembles the generic programming capabilities introduced to GHC 7.2.
@@ -30,7 +31,7 @@ object App10GenericRepresentationOfCaseClasses extends App {
   val hlist: Int :: String :: Boolean :: HNil =
     fooGen.to(foo)
   // hlist: fooGen.Repr = 23 :: foo :: true :: HNil
-  println( hlist )
+  println(hlist)
 
   println("\n>>> modified HList:")
   val modifiedHList: Int :: String :: Boolean :: HNil = 13 :: hlist.tail
@@ -43,13 +44,12 @@ object App10GenericRepresentationOfCaseClasses extends App {
   // modifiedFoo: Foo = Foo(13,foo,true)
   println(modifiedFoo)
 
-
   // Typically values of Generic for a given case class are materialized using an implicit macro,
   // allowing a wide variety of structural programming problems to be solved with no or minimal boilerplate.
   // In particular the existing lens, Scrap Your Boilerplate and generic zipper implementations are now available
   // for any case class family (recursive families included, as illustrated below) without any additional boilerplate being required,
 
-  println("\n>>> Simple recursive case class family:")
+  prtTitle("Simple recursive case class family:")
 
   sealed trait Tree[T]
   case class Leaf[T](t: T) extends Tree[T]
@@ -60,7 +60,7 @@ object App10GenericRepresentationOfCaseClasses extends App {
 
   import shapeless.PolyDefns.->
 
-  object inc extends ->((i: Int) => i+1)
+  object inc extends ->((i: Int) => i + 1)
 
   val tree: Tree[Int] =
     Node(
@@ -105,7 +105,6 @@ object App10GenericRepresentationOfCaseClasses extends App {
   //     )
   //   )
 
-
   println("\n>>> LabelledGeneric:")
 
   // A natural extension of Generic's mapping of the content of data types onto a sum of products representation
@@ -129,19 +128,18 @@ object App10GenericRepresentationOfCaseClasses extends App {
   // rec: bookGen.Repr = Benjamin Pierce :: Types and Programming Languages :: 262162091 :: 44.11 :: HNil
   println(rec)
 
-  println( rec(Symbol("price")) ) // Access the price field symbolically, maintaining type information
+  println(rec(Symbol("price"))) // Access the price field symbolically, maintaining type information
   // res0: Double = 44.11
 
-  println( bookGen.from(rec.updateWith(Symbol("price"))(_+2.0)) ) // type safe operations on fields
+  println(bookGen.from(rec.updateWith(Symbol("price"))(_ + 2.0))) // type safe operations on fields
   // res1: Book = Book(Benjamin Pierce,Types and Programming Languages,262162091,46.11)
 
   case class ExtendedBook(author: String, title: String, id: Int, price: Double, inPrint: Boolean)
 
   val bookExtGen = LabelledGeneric[ExtendedBook]
 
-  println( bookExtGen.from(rec + (Symbol("inPrint") ->> true)) )  // map values between case classes via generic representation
+  println(bookExtGen.from(rec + (Symbol("inPrint") ->> true))) // map values between case classes via generic representation
   // res2: ExtendedBook = ExtendedBook(Benjamin Pierce,Types and Programming Languages,262162091,44.11,true)
 
-
-  println("============\n")
+  prtLine()
 }

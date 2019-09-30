@@ -38,6 +38,8 @@ inThisBuild(
       import shapeless.ops._
       import shapeless.syntax._
       import shapeless.syntax.singleton._
+      import shapeless.syntax.std.tuple._
+      import shapeless.poly._
       println
       """.stripMargin // initialize REPL
   )

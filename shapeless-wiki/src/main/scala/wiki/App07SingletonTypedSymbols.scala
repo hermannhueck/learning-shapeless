@@ -1,14 +1,15 @@
 package wiki
 
 import shapeless._
+import util._
 
 /*
   https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0#singleton-typed-symbols
  */
 object App07SingletonTypedSymbols extends App {
 
-  println("\n===== Singleton-typed Symbols =======")
-
+  // ----------------------------------------
+  prtTitle("Singleton-typed Symbols")
 
   // Scala's Symbol type, despite having its own syntax and being isomorphic to the String type, isn't equipped with useful singleton-typed literals.
   // An encoding of singleton types for Symbol literals has proven to valuable (see below),
@@ -18,16 +19,15 @@ object App07SingletonTypedSymbols extends App {
 
   // non-singleton type
   // val foo = 'foo         // deprecated syntax
-  val foo = Symbol("foo")   // new syntax
+  val foo = Symbol("foo") // new syntax
 
-  println( foo )
+  println(foo)
   // res0: Symbol = 'foo
 
-  println( foo.narrow )   // singleton type
+  println(foo.narrow) // singleton type
   // res1: Symbol with shapeless.tag.Tagged[String("foo")] = 'foo
   // Scala 2.13.x:
   // res1: foo.type = 'foo
 
-
-  println("============\n")
+  prtLine()
 }

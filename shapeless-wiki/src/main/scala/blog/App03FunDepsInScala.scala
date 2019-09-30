@@ -1,14 +1,15 @@
 package blog
 
 import scala.collection.mutable
+import util._
 
 /*
   http://milessabin.com/blog/2011/07/16/fundeps-in-scala/
  */
 object App03FunDepsInScala extends App {
 
-  println("\n===== Functional Dependencies in Scala =======")
-
+  // ----------------------------------------
+  prtTitle("Functional Dependencies in Scala")
 
   def error(msg: String) = throw new UnsupportedOperationException
 
@@ -36,7 +37,7 @@ object App03FunDepsInScala extends App {
       implicitly[MultDep[Matrix, Vector, Matrix]]
       <console>:15: error: could not find implicit value for
         parameter e: MultDep[Matrix,Vector,Matrix]
-    */
+     */
 
     def mult[A, B, C](a: A, b: B)(implicit instance: MultDep[A, B, C]): C =
       error("TODO")
@@ -59,7 +60,6 @@ object App03FunDepsInScala extends App {
     // attempting to locate an implicit definition of MultDep[_, _, _] consistent with those two types.
     // By construction, it will only ever find one, and that is sufficient to uniquely determine C for use as the result type of the function.
   }
-
 
   {
     trait MultDep[A, B, C] {
@@ -94,7 +94,6 @@ object App03FunDepsInScala extends App {
     // val r5: Matrix = mult(new Matrix {}, new Vector{})
   }
 
-
   {
     trait ExtractDep[A, B] {
       def apply(a: A): B
@@ -112,7 +111,6 @@ object App03FunDepsInScala extends App {
     val c: Char = extract(('x', 3))
   }
 
-
   {
     import scala.collection.generic._
 
@@ -129,7 +127,7 @@ object App03FunDepsInScala extends App {
     // implicitly[CanBuildFrom[List[String], Int, Set[Int]]]
     // <console>:11: error: ...
 
-/*
+    /*
     trait TraversibleLike[Repr, +A] {
       def map[B, That](f: A => B)(implicit bf: CanBuildFrom[Repr, B, That]): That = {
         val repr: Repr = ???
@@ -139,9 +137,8 @@ object App03FunDepsInScala extends App {
         b.result
       }
     }
-*/
+   */
   }
 
-
-  println("============\n")
+  prtLine()
 }

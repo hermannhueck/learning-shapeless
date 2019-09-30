@@ -1,14 +1,15 @@
 package blog
 
 import scala.language.higherKinds
+import util._
 
 /*
   http://milessabin.com/blog/2012/05/10/shapeless-polymorphic-function-values-2/
  */
 object App02PolymorphicFunctionValues2 extends App {
 
-  println("\n===== First-class polymorphic function values in shapeless (2 of 3) — Natural Transformations in Scala =======")
-
+  // ----------------------------------------
+  prtTitle("First-class polymorphic function values in shapeless (2 of 3) — Natural Transformations in Scala")
 
   def singleton[T](t: T): Set[T] = Set(t)
   def identity[T](t: T): T = t
@@ -22,8 +23,11 @@ object App02PolymorphicFunctionValues2 extends App {
 
     /*
     trait Function1[-T, +R] { def apply(t: T): R }
-     */
+   */
   }
+
+  // ----------------------------------------
+  prtSubTitle("Polymorphism lost, polymorphism regained")
 
   {
     // The natural move at this point is try to shift the type parameters off Function1 and onto the apply method
@@ -36,6 +40,9 @@ object App02PolymorphicFunctionValues2 extends App {
     trait PolyFunction1 {
       def apply[T, R](t: T): R
     }
+
+    val dummy = 42 // suppresses the warning for this block
+    println(dummy)
   }
 
   {
@@ -111,7 +118,6 @@ object App02PolymorphicFunctionValues2 extends App {
     headOption(List("foo", "bar", "baz"))
     // res3: Option[String] = Some(foo)
 
-
     // value level const
     def const[T](t: T)(x: T): T = t
 
@@ -121,8 +127,7 @@ object App02PolymorphicFunctionValues2 extends App {
     const3(23)
     // res6: Int = 3
 
-
-      // type level Const
+    // type level Const
     type Const[C] = {
       type λ[T] = C
     }
@@ -133,12 +138,11 @@ object App02PolymorphicFunctionValues2 extends App {
     implicitly[Const[Int]#λ[Boolean] =:= Int]
     // res1: =:=[Int,Int] = <function1>
 
-
-/*
+    /*
     object size extends PolyFunction1[Id, Const[Int]#λ] {
       def apply[T](t: T): Int = 0
     }
-*/
+     */
 
     // We have the signature right, at least, but what about the implementation of the apply method?
     // Just returning a constant 0 isn’t particularly interesting. Unfortunately we don’t have much to work with —
@@ -153,7 +157,7 @@ object App02PolymorphicFunctionValues2 extends App {
       def apply[T](t: T): Int = t match {
         case l: List[_] => l.length
         case s: String  => s.length
-        case _ => 0
+        case _          => 0
       }
     }
 
@@ -168,7 +172,7 @@ object App02PolymorphicFunctionValues2 extends App {
   }
 
   {
-    // A spoon full of sugar
+    prtSubTitle("A spoon full of sugar")
 
     trait ~>[F[_], G[_]] {
       def apply[T](f: F[T]): G[T]
@@ -195,11 +199,12 @@ object App02PolymorphicFunctionValues2 extends App {
       def apply[T](t: T): Int = t match {
         case l: List[_] => l.length
         case s: String  => s.length
-        case _ => 0
+        case _          => 0
       }
     }
 
-    // Function-like?
+    // ----------------------------------------
+    prtSubTitle("Function-like?")
     //
     // I’ve been careful to describe these things as “function-like” values rather than as functions to emphasize
     // that they don’t and can’t conform to Scala’s standard FunctionN types. The immediate upshot of this is
@@ -227,12 +232,13 @@ object App02PolymorphicFunctionValues2 extends App {
     implicit def polyToMono3[F[_], T](f: F ~> Id): F[T] => T = f(_)
     implicit def polyToMono4[T](f: Id ~> Id): T => T = f[T](_)
     implicit def polyToMono5[G, T](f: Id ~> Const[G]#λ): T => G = f(_)
-    implicit def polyToMono6[F[_], G, T](f: F ~> Const[G]# λ): F[T] => G = f(_)
+    implicit def polyToMono6[F[_], G, T](f: F ~> Const[G]#λ): F[T] => G = f(_)
 
     List(1, 2, 3) map singleton
     // res0: List[Set[Int]] = List(Set(1), Set(2), Set(3))
+
+    prtSubTitle("Natural transformations and their discontents")
   }
 
-
-  println("============\n")
+  prtLine()
 }

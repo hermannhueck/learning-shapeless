@@ -2,14 +2,15 @@ package blog
 
 import shapeless._
 import HList._
+import util._
 
 /*
   http://milessabin.com/blog/2012/04/27/shapeless-polymorphic-function-values-1/
  */
 object App01PolymorphicFunctionValues1 extends App {
 
-  println("\n===== First-class polymorphic function values in shapeless (1 of 3) — Function values in Scala =======")
-
+  // ----------------------------------------
+  prtTitle("First-class polymorphic function values in shapeless (1 of 3) — Function values in Scala")
 
   {
     def singleton[A]: A => Set[A] = a => Set(a)
@@ -28,9 +29,9 @@ object App01PolymorphicFunctionValues1 extends App {
     // res2: Set[Int] :: Set[String] :: Set[Boolean] :: HNil = Set(23)  :: Set(foo)    :: Set(false)   :: HNil
   }
 
-
   {
-    println("----- Method-level parametric polymorphism -----")
+    // ----------------------------------------
+    prtSubTitle("Method-level parametric polymorphism")
 
     // Monomorphic methods have type parameter-free signatures
     def monomorphic(s: String): Int = s.length
@@ -42,7 +43,6 @@ object App01PolymorphicFunctionValues1 extends App {
 
     println(polymorphic(List(1, 2, 3)))
     println(polymorphic(List("foo", "bar", "baz")))
-
 
     trait Base {
       def foo: Int
@@ -60,7 +60,6 @@ object App01PolymorphicFunctionValues1 extends App {
     println(subtypePolymorphic(new Derived2)) // OK: Derived2 <: Base
   }
 
-
   object Module {
     def stringSingleton(s: String): Set[String] = Set(s)
   }
@@ -69,7 +68,8 @@ object App01PolymorphicFunctionValues1 extends App {
   // singleton: [T](t: T)Set[T]
 
   {
-    println("----- Methods vs. function values -----")
+    // ----------------------------------------
+    prtSubTitle("Methods vs. function values")
 
     import Module._
 
@@ -112,7 +112,7 @@ object App01PolymorphicFunctionValues1 extends App {
         found   : java.lang.String("foo")
         required: Nothing
         singletonFn("foo")
-    */
+     */
 
     /*
       singletonFn(23)
@@ -120,18 +120,18 @@ object App01PolymorphicFunctionValues1 extends App {
         found   : Int(23)
         required: Nothing
         singletonFn(23)
-    */
+   */
   }
 
-
   {
-    println("----- Scala function types -----")
+    // ----------------------------------------
+    prtSubTitle("Scala function types")
 
     /*
       trait Function1[-T, +R] {
         def apply(v: T): R
       }
-    */
+     */
 
     val stringSingletonFn = new Function1[String, Set[String]] {
       def apply(v: String): Set[String] = Module.stringSingleton(v)
@@ -153,21 +153,19 @@ object App01PolymorphicFunctionValues1 extends App {
             found   : Int(23)
             required: String
             singletonFn(23)
-    */
+     */
 
     // Having specified that we want our function value instantiated to accept String arguments we are stuck with that choice forever after.
     // Or, in other words, we have completely lost the polymorphism of the underlying method.
 
     // eta-expanded to Int => Set[Int]
-    println( List(1, 2, 3) map singleton )
+    println(List(1, 2, 3) map singleton)
     // res0: List[Set[Int]] = List(Set(1), Set(2), Set(3))
 
-    // eta-expanded to String => Set[String] 
-    println( List("foo", "bar", "baz") map singleton )
+    // eta-expanded to String => Set[String]
+    println(List("foo", "bar", "baz") map singleton)
     // res1: List[Set[String]] = List(Set(foo), Set(bar), Set(baz))
   }
 
-
-
-  println("============\n")
+  prtLine()
 }

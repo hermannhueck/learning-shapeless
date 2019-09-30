@@ -1,14 +1,15 @@
 package wiki
 
 import shapeless._
+import util._
 
 /*
   https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0#type-safe-cast
  */
 object App15TypeSafeCast extends App {
 
-  println("\n===== Type safe cast =======")
-
+  // ----------------------------------------
+  prtTitle("Type safe cast")
 
   // shapeless provides a Typeable type class which provides a type safe cast operation. cast returns an Option of the target type
   // rather than throwing an exception if the value is of the incorrect type, as can happen with separate isInstanceOf and asInstanceOf operations.
@@ -52,7 +53,7 @@ object App15TypeSafeCast extends App {
 
   val res3 = (l: Any) match {
     case `List[String]`(List(s, _*)) => s.length
-    case `List[Int]`(List(i, _*))    => i+1
+    case `List[Int]`(List(i, _*))    => i + 1
   }
   // res0: Int = 2
   println(res3)
@@ -64,6 +65,5 @@ object App15TypeSafeCast extends App {
   // should be avoided in general other than at boundaries with external components which are intrinsically untyped (eg. serialization points)
   // or which otherwise have poor type discipline.
 
-
-  println("============\n")
+  prtLine()
 }

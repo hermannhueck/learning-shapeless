@@ -1,14 +1,15 @@
 package wiki
 
 import shapeless._
+import util._
 
 /*
   https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0#singleton-typed-literals
  */
 object App06SingletonTypedLiterals extends App {
 
-  println("\n===== Singleton-typed literals =======")
-
+  // ----------------------------------------
+  prtTitle("Singleton-typed literals")
 
   // Although Scala's typechecker has always represented singleton types for literal values internally,
   // there has not previously been syntax available to express them, other than by modifying the compiler.
@@ -24,13 +25,13 @@ object App06SingletonTypedLiterals extends App {
   val l = 23 :: "foo" :: true :: HNil
   // l: Int :: String :: Boolean :: HNil = 23 :: foo :: true :: HNil
 
-  println( l(1) )
+  println(l(1))
   // res0: String = foo
 
   val t = (23, "foo", true)
   // t: (Int, String, Boolean) = (23,foo,true)
 
-  println( t(1) )
+  println(t(1))
   // res1: String = foo
 
   // The examples in the tests and the following illustrate other possibilities,
@@ -38,10 +39,10 @@ object App06SingletonTypedLiterals extends App {
 
   import syntax.singleton._
 
-  println( 23.narrow )
+  println(23.narrow)
   // res0: Int(23) = 23
 
-  println( "foo".narrow )
+  println("foo".narrow)
   // res1: String("foo") = foo
 
   val (wTrue, wFalse) = (Witness(true), Witness(false))
@@ -62,62 +63,61 @@ object App06SingletonTypedLiterals extends App {
   def select(b: WitnessWith[Select])(t: b.instance.Out) = t
   // select: (b: shapeless.WitnessWith[Select])(t: b.instance.Out)b.instance.Out
 
-  println( select(true)(23) )
+  println(select(true)(23))
   // res2: Int = 23
 
-  println( select(false)("foo") )
+  println(select(false)("foo"))
   // res3: String = foo
 
-/*
+  /*
   select(true)("foo")
   <console>:18: error: type mismatch;
     found   : String("foo")
     required: Int
     select(true)("foo")
     ^
-*/
+   */
 
-/*
+  /*
   select(false)(23)
   <console>:18: error: type mismatch;
     found   : Int(23)
     required: String
     select(false)(23)
     ^
-*/
+   */
 
-
-
-  println("----- Joni Freeman: Explicit type for a Shapeless record -----")
+  // ----------------------------------------
+  prtSubTitle("Joni Freeman: Explicit type for a Shapeless record")
   // https://gist.github.com/jonifreeman/6533463
 
   object TestExplicitRecordType {
     import shapeless._, labelled._, record._, syntax.singleton._
 
     object testF extends Poly1 {
-      implicit def atFieldType[F, V](implicit wk: Witness.Aux[F]) = at[FieldType[F, V]] {
-        f => wk.value.toString
+      implicit def atFieldType[F, V](implicit wk: Witness.Aux[F]) = at[FieldType[F, V]] { f =>
+        wk.value.toString
       }
     }
 
-/*
+    /*
     // Is there more straightforward way to give an explicit type for a record?
     val k1  = Witness("k1")
     val k2  = Witness("k2")
     type Error = FieldType[k1.T, String] :: FieldType[k2.T, Long] :: HNil
-*/
+     */
     // Miles Sabin's reply:
     type Error = Record.`"k1" -> String, "k2" -> Long`.T
 
     // That seems to work...
-    val err1        = "k1" ->> "1" :: "k2" ->> 1L :: HNil
+    val err1 = "k1" ->> "1" :: "k2" ->> 1L :: HNil
     val err2: Error = "k1" ->> "1" :: "k2" ->> 1L :: HNil
 
-    println( testF(err1.head) )  // OK
-    println( testF(err2.head) )  // OK
+    println(testF(err1.head)) // OK
+    println(testF(err2.head)) // OK
   }
+
   TestExplicitRecordType
 
-
-  println("============\n")
+  prtLine()
 }

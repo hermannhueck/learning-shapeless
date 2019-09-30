@@ -1,34 +1,36 @@
 package wiki
 
 import shapeless._
+import util._
 
 /*
   https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0#heterogenous-lists
  */
 object App02HeterogeniousLists extends App {
 
-  println("\n===== Heterogenous lists =======")
+  // ----------------------------------------
+  prtTitle("Heterogenous lists")
 
-
-  println("----- HList#map -----")
+  // ----------------------------------------
+  prtSubTitle("HList#map")
 
   import poly._
 
   // The same definition of choose as above
   object choose extends (Set ~> Option) {
-    def apply[T](s : Set[T]) = s.headOption
+    def apply[T](s: Set[T]): Option[T] = s.headOption
   }
 
   val sets = Set(1) :: Set("foo") :: HNil
   // sets: Set[Int] :: Set[String] :: HNil = Set(1) :: Set(foo) :: HNil
   println(sets)
 
-  val opts = sets map choose   // map selects cases of choose for each HList element
+  val opts = sets map choose // map selects cases of choose for each HList element
   // opts: Option[Int] :: Option[String] :: HNil = Some(1) :: Some(foo) :: HNil
   println(opts)
 
-
-  println("----- HList#flatMap -----")
+  // ----------------------------------------
+  prtSubTitle("HList#flatMap")
 
   import poly.identity
 
@@ -36,12 +38,12 @@ object App02HeterogeniousLists extends App {
   // l: ((Int :: String :: HNil) :: HNil :: (Boolean :: HNil) :: HNil= (23 :: foo :: HNil) :: HNil :: (true :: HNil) :: HNil
   println(l)
 
-  val res0 = l flatMap identity           // flatten
+  val res0 = l flatMap identity // flatten
   // res0: Int :: String :: Boolean :: HNil = 23 :: foo :: true :: HNil
   println(res0)
 
-
-  println("----- HList#fold -----")
+  // ----------------------------------------
+  prtSubTitle("HList#fold")
 
   object size extends Poly1 {
 
@@ -51,13 +53,15 @@ object App02HeterogeniousLists extends App {
     implicit def caseString =
       at[String](_.length)
 
-    implicit def caseTuple[T, U](implicit st : Case.Aux[T, Int], su : Case.Aux[U, Int]) =
+    implicit def caseTuple[T, U](implicit st: Case.Aux[T, Int], su: Case.Aux[U, Int]) =
       at[(T, U)](t => size(t._1) + size(t._2))
   }
 
   object addSize extends Poly2 {
     implicit def default[T](implicit st: size.Case.Aux[T, Int]): Case.Aux[Int, T, Int] =
-      at[Int, T] { (acc, t) => acc + size(t) }
+      at[Int, T] { (acc, t) =>
+        acc + size(t)
+      }
   }
 
   val l2 = 23 :: "foo" :: (13, "wibble") :: HNil
@@ -68,8 +72,8 @@ object App02HeterogeniousLists extends App {
   // res1: Int = 11
   println(res1)
 
-
-  println("----- HList#toZipper -----")
+  // ----------------------------------------
+  prtSubTitle("HList#toZipper")
 
   import syntax.zipper._
 
@@ -89,8 +93,8 @@ object App02HeterogeniousLists extends App {
   // res4: Int :: String :: String :: Double :: HNil = 1 :: foo :: bar :: 3.0 :: HNil
   println(res4)
 
-
-  println("----- HList is covariant. -----")
+  // ----------------------------------------
+  prtSubTitle("HList is covariant.")
 
   trait Fruit
   case class Apple() extends Fruit
@@ -99,16 +103,16 @@ object App02HeterogeniousLists extends App {
   type FFFF = Fruit :: Fruit :: Fruit :: Fruit :: HNil
   type APAP = Apple :: Pear :: Apple :: Pear :: HNil
 
-  val a : Apple = Apple()
-  val p : Pear = Pear()
+  val a: Apple = Apple()
+  val p: Pear = Pear()
 
-  val apap : APAP = a :: p :: a :: p :: HNil
+  val apap: APAP = a :: p :: a :: p :: HNil
   println(s"Apples and Pears: $apap")
-  val ffff : FFFF = apap          // covariant: APAP <: FFFF
+  val ffff: FFFF = apap // covariant: APAP <: FFFF
   println(s"Fruits: $ffff")
 
-
-  println("----- HList#unify -----")
+  // ----------------------------------------
+  prtSubTitle("HList#unify")
 
   // And it has a unify operation which converts it to an HList of elements of the least upper bound of the original types,
 
@@ -116,8 +120,8 @@ object App02HeterogeniousLists extends App {
   // unified: Fruit :: Fruit :: Fruit :: Fruit :: HNil = Apple() :: Pear() :: Apple() :: Pear() :: HNil
   println(unified)
 
-
-  println("----- HList#toList -----")
+  // ----------------------------------------
+  prtSubTitle("HList#toList")
 
   // It supports conversion to an ordinary Scala List of elements of the least upper bound of the original types,
 
@@ -125,8 +129,8 @@ object App02HeterogeniousLists extends App {
   // list: List[Fruit] = List(Apple(), Pear(), Apple(), Pear())
   println(list)
 
-
-  println("----- HList has a Typeable type class instance. -----")
+  // ----------------------------------------
+  prtSubTitle("HList has a Typeable type class instance.")
 
   // And it has a Typeable type class instance (see below), allowing, eg. vanilla List[Any]'s or HList's with elements of type Any
   // to be safely cast to precisely typed HList's.
@@ -148,6 +152,5 @@ object App02HeterogeniousLists extends App {
   // (eg. to serialize a precisely typed record after construction), and its later reconstruction
   // (eg. a weakly typed deserialized record with a known schema can have it's precise typing reestabilished).
 
-
-  println("============\n")
+  prtLine()
 }

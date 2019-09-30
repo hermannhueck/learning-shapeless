@@ -1,14 +1,15 @@
 package wiki
 
 import shapeless._
+import util._
 
 /*
   https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0#automatic-type-class-instance-derivation
  */
 object App12AutomaticTypeClassInstanceDerivation extends App {
 
-  println("\n===== Automatic type class instance derivation =======")
-
+  // ----------------------------------------
+  prtTitle("Automatic type class instance derivation")
 
   // Based on and extending Generic and LabelledGeneric, Lars Hupel (@larsr_h) has contributed the TypeClass family of type classes,
   // which provide automatic type class derivation facilities roughly equivalent to those available with GHC
@@ -22,8 +23,8 @@ object App12AutomaticTypeClassInstanceDerivation extends App {
   //import Monoid._
 
   // A pair of arbitrary case classes
-  case class Foo(i : Int, s : String)
-  case class Bar(b : Boolean, s : String, d : Double)
+  case class Foo(i: Int, s: String)
+  case class Bar(b: Boolean, s: String, d: Double)
 
   // Monoid type class automatically defined for case class Foo
   val res0 = Foo(13, "foo") |+| Foo(23, "bar")
@@ -37,9 +38,7 @@ object App12AutomaticTypeClassInstanceDerivation extends App {
 
   // The shapeless-contrib (now scalaz-deriving) project also contains automatically derived type class instances for Scalaz, Spire and Scalacheck.
 
-
-  println("============\n")
-
+  prtLine()
 
   /**
     * Pedagogic subset of the Scalaz Monoid
@@ -60,17 +59,17 @@ object App12AutomaticTypeClassInstanceDerivation extends App {
 
     implicit def intMonoid: Monoid[Int] = new Monoid[Int] {
       def zero = 0
-      def append(a: Int, b: Int) = a+b
+      def append(a: Int, b: Int) = a + b
     }
 
     implicit def doubleMonoid: Monoid[Double] = new Monoid[Double] {
       def zero = 0.0
-      def append(a: Double, b: Double) = a+b
+      def append(a: Double, b: Double) = a + b
     }
 
     implicit def stringMonoid: Monoid[String] = new Monoid[String] {
       def zero = ""
-      def append(a: String, b: String) = a+b
+      def append(a: String, b: String) = a + b
     }
 
     object typeClass extends ProductTypeClass[Monoid] {

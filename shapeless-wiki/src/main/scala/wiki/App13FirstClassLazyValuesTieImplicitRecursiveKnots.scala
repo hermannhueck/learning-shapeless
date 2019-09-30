@@ -1,14 +1,15 @@
 package wiki
 
 import shapeless._
+import util._
 
 /*
   https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0#first-class-lazy-values-tie-implicit-recursive-knots
  */
 object App13FirstClassLazyValuesTieImplicitRecursiveKnots extends App {
 
-  println("\n===== First class lazy values tie implicit recursive knots =======")
-
+  // ----------------------------------------
+  prtTitle("First class lazy values tie implicit recursive knots")
 
   // Traversals and transformations of recursive types (eg. cons lists or trees) must themselves be recursive.
   // Consequently type class instances which perform such operations must be recursive values in turn.
@@ -53,7 +54,7 @@ object App13FirstClassLazyValuesTieImplicitRecursiveKnots extends App {
     // Case for List[T]: note (mutually) recursive implicit argument referencing Show[Cons[T]]
     implicit def showList[T](implicit sc: Lazy[Show[Cons[T]]]): Show[List[T]] = new Show[List[T]] {
       def apply(t: List[T]): String = t match {
-        case n: Nil => show(n)
+        case n: Nil     => show(n)
         case c: Cons[T] => show(c)(sc.value)
       }
     }
@@ -65,9 +66,8 @@ object App13FirstClassLazyValuesTieImplicitRecursiveKnots extends App {
 
   println("Without the Lazy wrappers above the following would diverge ...\n")
   println(">>> show(list):")
-  println( show(list) )  //=> "Cons(1, Cons(2, Cons(3, Nil)))"
+  println(show(list)) //=> "Cons(1, Cons(2, Cons(3, Nil)))"
   println("\n... which would otherwise be impossible in Scala.")
 
-
-  println("============\n")
+  prtLine()
 }
