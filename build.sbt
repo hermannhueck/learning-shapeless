@@ -1,12 +1,12 @@
 val projectName = "learning-shapeless"
 
-val shapeless               = "com.chuusai" %% "shapeless"                 % "2.3.3" withSources () withJavadoc ()
-val scalazDerivingShapeless = "org.scalaz"  %% "scalaz-deriving-shapeless" % "2.0.0-M1" withSources () withJavadoc ()
+val shapeless               = "com.chuusai" %% "shapeless"                 % "2.3.3"
+val scalazDerivingShapeless = "org.scalaz"  %% "scalaz-deriving-shapeless" % "2.0.0-M4"
 
-val scalaTest  = "org.scalatest"  %% "scalatest"  % "3.0.8"  % Test withSources () withJavadoc ()
-val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.14.2" % Test withSources () withJavadoc ()
+val scalaTest  = "org.scalatest"  %% "scalatest"  % "3.1.1"  % Test
+val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.14.3" % Test
 
-val scala212               = "2.12.10"
+val scala212               = "2.12.11"
 val scala213               = "2.13.1"
 val supportedScalaVersions = List(scala212, scala213)
 
