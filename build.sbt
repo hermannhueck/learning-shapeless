@@ -1,10 +1,19 @@
 val projectName = "learning-shapeless"
 
 val shapeless               = "com.chuusai" %% "shapeless"                 % "2.3.3"
-val scalazDerivingShapeless = "org.scalaz"  %% "scalaz-deriving-shapeless" % "2.0.0-M4"
+val scalazDerivingShapeless = "org.scalaz"  %% "scalaz-deriving-shapeless" % "2.0.0-M5"
 
 val scalaTest  = "org.scalatest"  %% "scalatest"  % "3.1.1"  % Test
 val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.14.3" % Test
+// val scalaTestPlusCheck = "org.scalatestplus" %% "scalatestplus-scalacheck" % "3.1.0.0-RC2"
+val scalaTestPlusCheck = "org.scalatestplus" %% "scalacheck-1-14" % "3.1.1.1"
+
+// https://github.com/ghik/silencer
+lazy val silencerVersion = "1.6.0"
+lazy val silencerLib     = "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
+lazy val silencerPlugin = compilerPlugin(
+  "com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full
+)
 
 val scala212               = "2.12.11"
 val scala213               = "2.13.1"
@@ -58,7 +67,10 @@ lazy val gurnell = (project in file("gurnell"))
     description := "Code from Dave Gurnells book: The Type Astronaut's Guide to Shapeless",
     libraryDependencies ++= Seq(
       scalaTest,
-      scalaCheck
+      scalaCheck,
+      scalaTestPlusCheck,
+      silencerLib,
+      silencerPlugin
     )
   )
 
@@ -68,7 +80,10 @@ lazy val wiki = (project in file("shapeless-wiki"))
     name := "shapeless-wiki",
     description := "Code snippets from the Shapeless wiki: https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0",
     libraryDependencies ++= Seq(
-      scalazDerivingShapeless
+      scalazDerivingShapeless,
+      scalaTestPlusCheck,
+      silencerLib,
+      silencerPlugin
     )
   )
 

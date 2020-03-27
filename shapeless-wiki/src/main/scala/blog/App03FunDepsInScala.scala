@@ -6,6 +6,7 @@ import util._
 /*
   http://milessabin.com/blog/2011/07/16/fundeps-in-scala/
  */
+@com.github.ghik.silencer.silent("deprecated")
 object App03FunDepsInScala extends App {
 
   // ----------------------------------------
