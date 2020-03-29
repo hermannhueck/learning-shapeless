@@ -52,25 +52,16 @@ object App12AutomaticTypeClassInstanceDerivation extends App {
 
     def mzero[T](implicit mt: Monoid[T]): T = mt.zero
 
-    implicit def booleanMonoid: Monoid[Boolean] = new Monoid[Boolean] {
-      def zero                           = false
-      def append(a: Boolean, b: Boolean) = a || b
+    def monoidInstance[T](z: T)(f: (T, T) => T) = new Monoid[T] {
+      def zero               = z
+      def append(a: T, b: T) = f(a, b)
     }
 
-    implicit def intMonoid: Monoid[Int] = new Monoid[Int] {
-      def zero                   = 0
-      def append(a: Int, b: Int) = a + b
-    }
-
-    implicit def doubleMonoid: Monoid[Double] = new Monoid[Double] {
-      def zero                         = 0.0
-      def append(a: Double, b: Double) = a + b
-    }
-
-    implicit def stringMonoid: Monoid[String] = new Monoid[String] {
-      def zero                         = ""
-      def append(a: String, b: String) = a + b
-    }
+    implicit val booleanMonoid: Monoid[Boolean] = monoidInstance(false)(_ || _)
+    implicit val intMonoid: Monoid[Int]         = monoidInstance(0)(_ + _)
+    implicit val doubleMonoid: Monoid[Double]   = monoidInstance(0.0)(_ + _)
+    implicit val stringMonoid: Monoid[String]   = monoidInstance("")(_ + _)
+    implicit def listMonoid[T]: Monoid[List[T]] = monoidInstance(List.empty[T])(_ ++ _)
 
     object typeClass extends ProductTypeClass[Monoid] {
 

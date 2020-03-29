@@ -59,9 +59,7 @@ object App02HeterogeniousLists extends App {
 
   object addSize extends Poly2 {
     implicit def default[T](implicit st: size.Case.Aux[T, Int]): Case.Aux[Int, T, Int] =
-      at[Int, T] { (acc, t) =>
-        acc + size(t)
-      }
+      at[Int, T] { (acc, t) => acc + size(t) }
   }
 
   val l2 = 23 :: "foo" :: (13, "wibble") :: HNil

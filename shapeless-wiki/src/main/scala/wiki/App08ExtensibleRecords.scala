@@ -1,6 +1,9 @@
 package wiki
 
 import shapeless._
+import syntax.singleton._
+import record._
+
 import util._
 
 /*
@@ -15,7 +18,15 @@ object App08ExtensibleRecords extends App {
   // his means that there is no concrete representation needed at all for the keys. Amongst other things this will allow subsequent work on Generic
   // to map case classes directly to records with their member names encoded in their element types.
 
-  import shapeless._; import syntax.singleton._; import record._
+  // type syntax removed in shapeless 2.1.0
+  // type Book =
+  //   (wAuthor.T ->> String) ::
+  //     (wTitle.T ->> String) ::
+  //     (wId.T ->> Int) ::
+  //     (wPrice.T ->> Double) ::
+  //     HNil
+
+  type Book = Record.`"author" -> String, "title" -> String, "id" -> Int, "price" -> Double`.T
 
   val book =
     ("author" ->> "Benjamin Pierce") ::
