@@ -6,7 +6,7 @@ import util._
 /*
   http://milessabin.com/blog/2011/07/16/fundeps-in-scala/
  */
-@com.github.ghik.silencer.silent("deprecated")
+// @com.github.ghik.silencer.silent("deprecated")
 object App03FunDepsInScala extends App {
 
   // ----------------------------------------
@@ -113,12 +113,14 @@ object App03FunDepsInScala extends App {
   }
 
   {
-    import scala.collection.generic._
+    // only for Scala 2.12
 
-    implicitly[CanBuildFrom[List[Int], String, List[String]]]
+    // import scala.collection.generic._
+
+    // implicitly[CanBuildFrom[List[Int], String, List[String]]]
     // res0: CanBuildFrom[List[Int],String,List[String]] = ...
 
-    implicitly[CanBuildFrom[Set[String], Double, Set[Double]]]
+    // implicitly[CanBuildFrom[Set[String], Double, Set[Double]]]
     // res1: CanBuildFrom[Set[String],Double,Set[Double]] = ...
 
     // These two don't compile ...
