@@ -26,13 +26,13 @@ object Chap072PolymorphicFunctions extends App {
 
     object myPoly extends Poly {
 
-      implicit def intCase =
+      implicit def intCase: Case[this.type, Int] =
         new Case[this.type, Int] {
           type Result = Double
           def apply(num: Int): Double = num / 2.0
         }
 
-      implicit def stringCase =
+      implicit def stringCase: Case[this.type, String] =
         new Case[this.type, String] {
           type Result = Int
           def apply(str: String): Int = str.length

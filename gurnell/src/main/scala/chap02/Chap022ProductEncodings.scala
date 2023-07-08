@@ -53,14 +53,14 @@ object Chap022ProductEncodings extends App {
   // iceCream2: IceCream = IceCream(Sundae,1,false)
   println(iceCream2)
 
-  println
+  println()
   case class Employee(name: String, number: Int, manager: Boolean)
   // Create an employee from an ice cream:
   val employee: Employee = Generic[Employee].from(Generic[IceCream].to(iceCream))
   // employee: Employee = Employee(Sundae,1,false)
   println(employee)
 
-  println
+  println()
   val tupleGen             = Generic[(String, Int, Boolean)]
   val hlist: tupleGen.Repr = tupleGen.to(("Hello", 123, true))
   // res4: tupleGen.Repr = Hello :: 123 :: true :: HNil

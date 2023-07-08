@@ -17,7 +17,7 @@
 package shapeless
 package examples
 
-import shapeless.ops.hlist.{Selector, Prepend}
+import shapeless.ops.hlist.{Prepend, Selector}
 import shapeless.test.illTyped
 
 object TypeLevelBacktrack extends App {
@@ -32,19 +32,19 @@ object TypeLevelBacktrack extends App {
   /** [[Parent]] / [[Child]] relationship, mother side. */
   trait MotherOf[Parent, Child]
 
-  def fact[P, C](): FatherOf[P, C] = new FatherOf[P, C] {}
+  def fact[P, C](): FatherOf[P, C]                            = new FatherOf[P, C] {}
   def fact[P, C]()(implicit d: DummyImplicit): MotherOf[P, C] = new MotherOf[P, C] {}
 
-  trait Bob;   trait Bill;  trait Stacy;  trait Ben
+  trait Bob; trait Bill; trait Stacy; trait Ben
   trait Buffy; trait Sarah; trait Philip; trait Julie
 
-  implicit val fact0:  Stacy MotherOf Bob   = fact()
-  implicit val fact1: Philip FatherOf Bob   = fact()
-  implicit val fact2:    Bob FatherOf Bill  = fact()
-  implicit val fact3:   Bill FatherOf Buffy = fact()
-  implicit val fact4:    Bob FatherOf Ben   = fact()
-  implicit val fact5:  Julie MotherOf Ben   = fact()
-  implicit val fact6:    Ben FatherOf Sarah = fact()
+  implicit val fact0: Stacy MotherOf Bob  = fact()
+  implicit val fact1: Philip FatherOf Bob = fact()
+  implicit val fact2: Bob FatherOf Bill   = fact()
+  implicit val fact3: Bill FatherOf Buffy = fact()
+  implicit val fact4: Bob FatherOf Ben    = fact()
+  implicit val fact5: Julie MotherOf Ben  = fact()
+  implicit val fact6: Ben FatherOf Sarah  = fact()
 
   // -------------------------------------------------------------------------
   // A Prolog style, direct encoding of this problem would use 4 rules:
@@ -62,17 +62,17 @@ object TypeLevelBacktrack extends App {
   object IsAncestor {
     def apply[A, D](implicit i: IsAncestor[A, D]): IsAncestor[A, D] = i
 
-    implicit def directFather[A, D]
-      (implicit e: FatherOf[A, D]) = new IsAncestor[A, D] {}
+    implicit def directFather[A, D](implicit e: FatherOf[A, D]): IsAncestor[A, D] =
+      new IsAncestor[A, D] {}
 
-    implicit def directMother[A, D]
-      (implicit e: MotherOf[A, D]) = new IsAncestor[A, D] {}
+    implicit def directMother[A, D](implicit e: MotherOf[A, D]): IsAncestor[A, D] =
+      new IsAncestor[A, D] {}
 
-    implicit def fatherSideRelation[A, D, Z]
-      (implicit e: FatherOf[A, Z], i: IsAncestor[Z, D]) = new IsAncestor[A, D] {}
+    implicit def fatherSideRelation[A, D, Z](implicit e: FatherOf[A, Z], i: IsAncestor[Z, D]): IsAncestor[A, D] =
+      new IsAncestor[A, D] {}
 
-    implicit def motherSideRelation[A, D, Z]
-      (implicit e: MotherOf[A, Z], i: IsAncestor[Z, D]) = new IsAncestor[A, D] {}
+    implicit def motherSideRelation[A, D, Z](implicit e: MotherOf[A, Z], i: IsAncestor[Z, D]): IsAncestor[A, D] =
+      new IsAncestor[A, D] {}
   }
 
   // -------------------------------------------------------------------------
@@ -105,24 +105,32 @@ object TypeLevelBacktrack extends App {
 
   // This is used to lower the priority of the *base case*.
   trait AllAncestorsLowPrio {
-    implicit def none[Person] = new AllAncestors[Person, HNil] {}
+    implicit def none[Person]: AllAncestors[Person, HNil] =
+      new AllAncestors[Person, HNil] {}
   }
 
   object AllAncestors extends AllAncestorsLowPrio {
-    implicit def fatherSide[F, P, PA <: HList]
-      (implicit m: FatherOf[F, P], a: AllAncestors[F, PA]) = new AllAncestors[P, F :: PA] {}
+    implicit def fatherSide[F, P, PA <: HList](
+        implicit m: FatherOf[F, P],
+        a: AllAncestors[F, PA]
+    ): AllAncestors[P, F :: PA] =
+      new AllAncestors[P, F :: PA] {}
 
-    implicit def motherSide[M, P, PA <: HList]
-      (implicit m: MotherOf[M, P], a: AllAncestors[M, PA]) = new AllAncestors[P, M :: PA] {}
+    implicit def motherSide[M, P, PA <: HList](
+        implicit m: MotherOf[M, P],
+        a: AllAncestors[M, PA]
+    ): AllAncestors[P, M :: PA] =
+      new AllAncestors[P, M :: PA] {}
 
-    implicit def bothSides[F, M, P, FA <: HList, MA <: HList, CA <: HList]
-      (implicit
+    implicit def bothSides[F, M, P, FA <: HList, MA <: HList, CA <: HList](
+        implicit
         l: FatherOf[F, P],
         r: MotherOf[M, P],
         f: AllAncestors[F, FA],
         m: AllAncestors[M, MA],
         p: Prepend.Aux[FA, MA, CA]
-      ) = new AllAncestors[P, F :: M :: CA] {}
+    ): AllAncestors[P, F :: M :: CA] =
+      new AllAncestors[P, F :: M :: CA] {}
   }
 
   /** Typeclass witnessing family relationship between [[P2]] and [[P1]]. */
@@ -131,11 +139,17 @@ object TypeLevelBacktrack extends App {
   object Relationship {
     def apply[D, A](implicit r: Relationship[D, A]): Relationship[D, A] = r
 
-    implicit def caseP2AncestorOfP1[P1, P2, A <: HList]
-      (implicit a: AllAncestors[P1, A], s: Selector[A, P2]) = new Relationship[P1, P2] {}
+    implicit def caseP2AncestorOfP1[P1, P2, A <: HList](
+        implicit a: AllAncestors[P1, A],
+        s: Selector[A, P2]
+    ): Relationship[P1, P2] =
+      new Relationship[P1, P2] {}
 
-    implicit def caseP1AncestorOfP2[P1, P2, A <: HList]
-      (implicit a: AllAncestors[P2, A], s: Selector[A, P1]) = new Relationship[P1, P2] {}
+    implicit def caseP1AncestorOfP2[P1, P2, A <: HList](
+        implicit a: AllAncestors[P2, A],
+        s: Selector[A, P1]
+    ): Relationship[P1, P2] =
+      new Relationship[P1, P2] {}
   }
 
   // Stacy   Philip

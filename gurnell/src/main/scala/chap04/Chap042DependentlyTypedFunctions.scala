@@ -53,7 +53,7 @@ object Chap042DependentlyTypedFunctions extends App {
     //        last1(321 :: "bar" :: HNil)
     //                  ^
 
-    println
+    println()
 
     val hlist = "foo" :: 123 :: HNil
 

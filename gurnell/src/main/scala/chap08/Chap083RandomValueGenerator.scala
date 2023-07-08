@@ -35,19 +35,19 @@ object Chap083RandomValueGenerator extends App {
 
   // Random booleans:
   implicit val booleanRandom: Random[Boolean] =
-    createRandom(() => scala.util.Random.nextBoolean)
+    createRandom(() => scala.util.Random.nextBoolean())
 
   for (i <- 1 to 3) println(random[Int])
   // 0
   // 8
   // 9
-  println
+  println()
 
   for (i <- 1 to 3) println(random[Char])
   // V
   // N
   // J
-  println
+  println()
 
   // ----------------------------------------
   prtSubTitle("8.3.2 Random products")
@@ -109,7 +109,7 @@ object Chap083RandomValueGenerator extends App {
         tRandom: Random[T]
     ): Random[H :+: T] =
       createRandom { () =>
-        val chooseH: Boolean = scala.util.Random.nextDouble < 0.5
+        val chooseH: Boolean = scala.util.Random.nextDouble() < 0.5
         val res: H :+: T     = if (chooseH) Inl(hRandom.value.get) else Inr(tRandom.get)
         res
       }
@@ -141,7 +141,7 @@ object Chap083RandomValueGenerator extends App {
     ): Random[H :+: T] = {
       createRandom { () =>
         val length: Int      = 1 + tLengthAsInt()
-        val chooseH: Boolean = scala.util.Random.nextDouble < (1.0 / length)
+        val chooseH: Boolean = scala.util.Random.nextDouble() < (1.0 / length)
         val res: H :+: T     = if (chooseH) Inl(hRandom.value.get) else Inr(tRandom.get)
         res
       }
@@ -154,7 +154,7 @@ object Chap083RandomValueGenerator extends App {
     // Red
     // Green
 
-    println
+    println()
     val lights = (0 until 1000).toList.map(_ => random[Light])
     // println(lights)
     println("count all:   " + lights.length)

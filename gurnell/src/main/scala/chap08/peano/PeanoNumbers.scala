@@ -17,7 +17,7 @@ object PeanoNumbers extends App {
   val three: Succ[Succ[Succ[Zero.type]]] = Succ(two)
   println(three)
 
-  println
+  println()
   (0 until 10)
     .map(toNat)
     .foreach(println)

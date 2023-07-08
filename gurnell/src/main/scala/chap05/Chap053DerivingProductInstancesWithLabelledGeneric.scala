@@ -159,16 +159,14 @@ object Chap053DerivingProductInstancesWithLabelledGeneric extends App {
       generic: LabelledGeneric.Aux[A, H],
       hEncoder: Lazy[JsonObjectEncoder[H]]
   ): JsonEncoder[A] =
-    createObjectEncoder { value =>
-      hEncoder.value.encode(generic.to(value))
-    }
+    createObjectEncoder { value => hEncoder.value.encode(generic.to(value)) }
 
   val iceCreamJson = JsonEncoder[IceCream].encode(iceCream)
   // iceCreamJson: JsonValue = JsonObject(List((name,JsonString(Sundae)), (numCherries,JsonNumber(1.0)), (inCone,JsonBoolean(false))))
   println(iceCreamJson)
 
   // ----------------------------------------
-  println
+  println()
   prtTitle("5.4 Deriving coproduct instances with LabelledGeneric")
 
   sealed trait Shape

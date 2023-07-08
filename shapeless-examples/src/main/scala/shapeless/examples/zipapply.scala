@@ -23,9 +23,10 @@ import shapeless.ops.hlist._
 
 // Spoiler alert - don't look!
 object compose extends Poly1 {
-  implicit def cases[A, B, C] = at[(A => B, B => C)] {
-    case (f1, f2) => f1 andThen f2
-  }
+  implicit def cases[A, B, C]: Case.Aux[(A => B, B => C), A => C] =
+    at[(A => B, B => C)] {
+      case (f1, f2) => f1 andThen f2
+    }
 }
 
 /**
@@ -36,11 +37,11 @@ object compose extends Poly1 {
 object ZipApplyExamples extends App {
 
   // Some functions over various types
-  def intFunction(i: Int): String = (i * i).toString
-  def stringFunction(s: String): Boolean = s startsWith "4"
-  def longFunction(l: Long): Int = (l & 0xFFFFFFFF).toInt
-  def uuidFunction(u: UUID): Long = u.getLeastSignificantBits ^ u.getMostSignificantBits
-  def booleanFunction(b: Boolean): String = if(b) "Yes" else "No"
+  def intFunction(i: Int): String         = (i * i).toString
+  def stringFunction(s: String): Boolean  = s startsWith "4"
+  def longFunction(l: Long): Int          = (l & 0xFFFFFFFF).toInt
+  def uuidFunction(u: UUID): Long         = u.getLeastSignificantBits ^ u.getMostSignificantBits
+  def booleanFunction(b: Boolean): String = if (b) "Yes" else "No"
 
   // Just to illustrate the types of the HLists - you don't actually need to define type aliases at all.
   type Functions = (Int => String) :: (String => Boolean) :: (Long => Int) :: (UUID => Long) :: HNil
@@ -48,10 +49,10 @@ object ZipApplyExamples extends App {
   type Results   = String :: Boolean :: Int :: Long :: HNil
 
   // Some sample values
-  val anInt = 22
+  val anInt   = 22
   val aString = "foo"
-  val aLong = 33L
-  val aUUID = UUID.fromString("deadbeef-dead-dead-beef-deaddeadbeef")
+  val aLong   = 33L
+  val aUUID   = UUID.fromString("deadbeef-dead-dead-beef-deaddeadbeef")
 
   // Example values of those types
   val functions1 = (intFunction _) :: (stringFunction _) :: (longFunction _) :: (uuidFunction _) :: HNil
@@ -120,19 +121,17 @@ object ZipApplyExamples extends App {
       * @return The results of applying the composed functions to the corresponding arguments, as an HList.
       */
     def inferenceExample[
-      Functions1 <: HList,
-      Functions2 <: HList,
-      Arguments  <: HList,
-      FCombined  <: HList,
-      FComposed  <: HList,
-      Output     <: HList
-    ](
-      f1: Functions1,
-      f2: Functions2,
-      a: Arguments)(implicit
-      zip: Zip.Aux[Functions1 :: Functions2 :: HNil, FCombined],
-      mapCompose: Mapper.Aux[compose.type, FCombined, FComposed],
-      zipApply: ZipApply.Aux[FComposed, Arguments, Output]
+        Functions1 <: HList,
+        Functions2 <: HList,
+        Arguments <: HList,
+        FCombined <: HList,
+        FComposed <: HList,
+        Output <: HList
+    ](f1: Functions1, f2: Functions2, a: Arguments)(
+        implicit
+        zip: Zip.Aux[Functions1 :: Functions2 :: HNil, FCombined],
+        mapCompose: Mapper.Aux[compose.type, FCombined, FComposed],
+        zipApply: ZipApply.Aux[FComposed, Arguments, Output]
     ): Output = zipApply(mapCompose(zip(f1 :: f2 :: HNil)), a)
 
     /**
@@ -148,10 +147,10 @@ object ZipApplyExamples extends App {
     // and that the results are what's expected
     val expected =
       stringFunction(intFunction(anInt)) ::
-      booleanFunction(stringFunction(aString)) ::
-      intFunction(longFunction(aLong)) ::
-      longFunction(uuidFunction(aUUID)) ::
-      HNil
+        booleanFunction(stringFunction(aString)) ::
+        intFunction(longFunction(aLong)) ::
+        longFunction(uuidFunction(aUUID)) ::
+        HNil
 
     assert(inferenceResults == expected)
 
@@ -162,6 +161,5 @@ object ZipApplyExamples extends App {
     // val inferenceResults3 = inferenceExample(functions1, functions2, "hey" :: "hi" :: "how ya" :: "doin'" :: HNil)
 
   }
-
 
 }

@@ -54,10 +54,12 @@ object App06SingletonTypedLiterals extends App {
 
   trait Select[B] { type Out }
 
-  implicit val selInt = new Select[True] { type Out = Int }
+  implicit val selInt: Select[True] { type Out = Int } =
+    new Select[True] { type Out = Int }
   // selInt: Select[True]{type Out = Int} = $anon$1@2c7b5e2a
 
-  implicit val selString = new Select[False] { type Out = String }
+  implicit val selString: Select[False] { type Out = String } =
+    new Select[False] { type Out = String }
   // selString: Select[False]{type Out = String} = $anon$2@57632e36
 
   def select(b: WitnessWith[Select])(t: b.instance.Out) = t
@@ -95,9 +97,8 @@ object App06SingletonTypedLiterals extends App {
     import shapeless._, labelled._, record._, syntax.singleton._
 
     object testF extends Poly1 {
-      implicit def atFieldType[F, V](implicit wk: Witness.Aux[F]) = at[FieldType[F, V]] { f =>
-        wk.value.toString
-      }
+      implicit def atFieldType[F, V](implicit wk: Witness.Aux[F]): Case.Aux[FieldType[F, V], String] =
+        at[FieldType[F, V]] { f => wk.value.toString }
     }
 
     /*

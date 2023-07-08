@@ -19,9 +19,7 @@ object Chap032aDerivingInstancesForProductsSpecific extends App {
 
   def writeCsv[A](values: List[A])(implicit encoder: CsvEncoder[A]): String =
     values
-      .map { value =>
-        encoder.encode(value).mkString(",")
-      }
+      .map { value => encoder.encode(value).mkString(",") }
       .mkString("\n")
 
   object CsvEncoder {
@@ -99,7 +97,7 @@ object Chap032aDerivingInstancesForProductsSpecific extends App {
   val encodedIceCreams: String = writeCsv(iceCreams)
   println(encodedIceCreams)
 
-  println
+  println()
 
   implicit val employeeEncoder: CsvEncoder[Employee] = {
     val gen = Generic[Employee]
@@ -110,7 +108,7 @@ object Chap032aDerivingInstancesForProductsSpecific extends App {
   val encodedEmployees: String = writeCsv(employees)
   println(encodedEmployees)
 
-  println
+  println()
 
   implicit def pairEncoder[A, B](implicit aEncoder: CsvEncoder[A], bEncoder: CsvEncoder[B]): CsvEncoder[(A, B)] =
     CsvEncoder.instance {

@@ -10,9 +10,9 @@ class PeanoNumbersSpec extends wordspec.AnyWordSpec with matchers.must.Matchers 
   private val natGen: Gen[Nat] =
     for {
       i <- Gen.choose(0, 100)
-    } yield i.toNat
+    } yield i.toNat()
 
-  implicit private val arbitraryNat = Arbitrary(natGen)
+  implicit private val arbitraryNat: Arbitrary[Nat] = Arbitrary(natGen)
 
   "Nat addition" must {
     "be associative" in {

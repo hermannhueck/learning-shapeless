@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Miles Sabin 
+ * Copyright (c) 2014 Miles Sabin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ package shapeless.examples
 import shapeless._
 
 /**
- * LabelledGeneric examples.
- * 
- * @author Miles Sabin
- */
+  * LabelledGeneric examples.
+  *
+  * @author Miles Sabin
+  */
 object LabelledGenericExamples extends App {
   import record._
   import ops.record._
@@ -31,7 +31,7 @@ object LabelledGenericExamples extends App {
   case class Book(author: String, title: String, id: Int, price: Double)
   case class ExtendedBook(author: String, title: String, id: Int, price: Double, inPrint: Boolean)
 
-  val bookGen = LabelledGeneric[Book]
+  val bookGen    = LabelledGeneric[Book]
   val bookExtGen = LabelledGeneric[ExtendedBook]
 
   val tapl = Book("Benjamin Pierce", "Types and Programming Languages", 262162091, 44.11)
@@ -39,35 +39,35 @@ object LabelledGenericExamples extends App {
   val rec = bookGen.to(tapl)
 
   // Read price field
-  val currentPrice = rec(Symbol("price"))  // Static type is Double
-  println("Current price is "+currentPrice)
-  println
+  val currentPrice = rec(Symbol("price")) // Static type is Double
+  println("Current price is " + currentPrice)
+  println()
 
   // Update price field, relying on static type of currentPrice
-  val updated = bookGen.from(rec.updateWith(Symbol("price"))(_+2.0))
+  val updated = bookGen.from(rec.updateWith(Symbol("price"))(_ + 2.0))
   println(updated)
-  println
+  println()
 
   // Add a new field, map back into ExtendedBook
   val extended = bookExtGen.from(rec + (Symbol("inPrint") ->> true)) // Static type is ExtendedBook
   println(extended)
-  println
+  println()
 
   // internationalization Shapeless style?
   case class Libro(autor: String, `título`: String, id: Int, precio: Double)
 
-  val libroGen = LabelledGeneric[Libro]
+  val libroGen  = LabelledGeneric[Libro]
   val libroKeys = Keys[libroGen.Repr]
-  val libroRec = rec.values.zipWithKeys(libroKeys())
-  val libro = libroGen.from(libroRec) // static type is Libro
+  val libroRec  = rec.values.zipWithKeys(libroKeys())
+  val libro     = libroGen.from(libroRec) // static type is Libro
   println(libro)
-  println
+  println()
 }
 
 /**
- * Utility trait intended for inferring a field type from a sample value and unpacking it into its
- * key and value types.
- */
+  * Utility trait intended for inferring a field type from a sample value and unpacking it into its
+  * key and value types.
+  */
 import labelled.FieldType
 
 trait Field {
@@ -90,7 +90,7 @@ object OldWineNewBottles extends App {
   val from = From("foo", "bar")
 
   val fromGen = LabelledGeneric[From]
-  val toGen = LabelledGeneric[To]
+  val toGen   = LabelledGeneric[To]
 
   // Define the type of the i field by example
   val iField = Field(Symbol("i") ->> 0)
@@ -99,5 +99,5 @@ object OldWineNewBottles extends App {
 
   val to = toGen.from(align(Symbol("i") ->> 23 :: fromGen.to(from)))
   println(to)
-  println
+  println()
 }

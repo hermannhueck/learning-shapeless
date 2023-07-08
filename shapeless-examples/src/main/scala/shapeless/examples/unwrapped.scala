@@ -1,6 +1,5 @@
-
 /*
- * Copyright (c) 2016 Miles Sabin 
+ * Copyright (c) 2016 Miles Sabin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,9 +31,9 @@ object UnwrappedExamples {
   // ID and two stringish attributes: a handle and an email address. That is,
   // rather than defining your users as `case class User(id: String, Email: String)`,
   // you might want to define them as:
-  case class Email(stringValue: String) extends AnyVal
+  case class Email(stringValue: String)      extends AnyVal
   case class UserHandle(stringValue: String) extends AnyVal
-  case class UserId(intValue: Int) extends AnyVal
+  case class UserId(intValue: Int)           extends AnyVal
   case class User(id: UserId, handle: UserHandle, email: Email)
 
   // This way, you can easily keep track of what's an email address and what's
@@ -48,51 +47,56 @@ object UnwrappedExamples {
     def fields(t: T): Map[String, String]
   }
   object Encode {
-    implicit def encodeHNil = new Encode[HNil] {
-      def fields(hnil: HNil) = Map.empty
-    }
+    implicit def encodeHNil: Encode[HNil] =
+      new Encode[HNil] {
+        def fields(hnil: HNil) = Map.empty
+      }
     implicit def encodeHCons[
-      K <: Symbol,
-      V,
-      Rest <: HList
-    ](implicit
-      key: Witness.Aux[K],
-      encodeV: Lazy[EncodeValue[V]],
-      encodeRest: Strict[Encode[Rest]]
-    ) = new Encode[FieldType[K, V] :: Rest] {
-      def fields(hl: FieldType[K, V] :: Rest) =
-        encodeRest.value.fields(hl.tail) +
-          (key.value.name -> encodeV.value.toJsonFragment(hl.head))
-    }
+        K <: Symbol,
+        V,
+        Rest <: HList
+    ](
+        implicit
+        key: Witness.Aux[K],
+        encodeV: Lazy[EncodeValue[V]],
+        encodeRest: Strict[Encode[Rest]]
+    ): Encode[FieldType[K, V] :: Rest] =
+      new Encode[FieldType[K, V] :: Rest] {
+        def fields(hl: FieldType[K, V] :: Rest) =
+          encodeRest.value.fields(hl.tail) +
+            (key.value.name -> encodeV.value.toJsonFragment(hl.head))
+      }
     // the magic one!
-    implicit def encodeGeneric[T, Repr](implicit
-      gen: LabelledGeneric.Aux[T, Repr],
-      encodeRepr: Lazy[Encode[Repr]]
-    ) = new Encode[T] {
-      def fields(t: T) = encodeRepr.value.fields(gen.to(t))
-    }
+    implicit def encodeGeneric[T, Repr](
+        implicit
+        gen: LabelledGeneric.Aux[T, Repr],
+        encodeRepr: Lazy[Encode[Repr]]
+    ): Encode[T] =
+      new Encode[T] {
+        def fields(t: T) = encodeRepr.value.fields(gen.to(t))
+      }
   }
 
   trait EncodeValue[-T] {
     def toJsonFragment(t: T): String
   }
   object EncodeValue {
-    implicit lazy val encodeString =
+    implicit lazy val encodeString: EncodeValue[String] =
       new EncodeValue[String] {
         def toJsonFragment(s: String) = s""""$s""""
       }
-    implicit lazy val encodeInt =
+    implicit lazy val encodeInt: EncodeValue[Int] =
       new EncodeValue[Int] {
         def toJsonFragment(i: Int) = s"""$i"""
       }
-    implicit def encodeRoot[T](implicit r: Lazy[Encode[T]]) =
+    implicit def encodeRoot[T](implicit r: Lazy[Encode[T]]): EncodeValue[T] =
       new EncodeValue[T] {
         def toJsonFragment(t: T) = r.value.toJson(t)
       }
   }
 
   // OK! Yay! Let's try it out!
-  val user = User(UserId(1234), UserHandle("jeffe"), Email("jeff@email.com"))
+  val user    = User(UserId(1234), UserHandle("jeffe"), Email("jeff@email.com"))
   val encoder = the[Encode[User]]
   println(encoder.toJson(user))
   // {"email":{"stringValue":"jeff@email.com"},"handle":{"stringValue":"jeffe"},"id":{"intValue":1234}}
@@ -109,30 +113,35 @@ object UnwrappedExamples {
     def fields(t: T): Map[String, String]
   }
   object Encode2 {
-    implicit def encodeHNil = new Encode2[HNil] {
-      def fields(hnil: HNil) = Map.empty
-    }
+    implicit def encodeHNil: Encode2[HNil] =
+      new Encode2[HNil] {
+        def fields(hnil: HNil) = Map.empty
+      }
     implicit def encodeHCons[
-      K <: Symbol,
-      V,
-      U,
-      Rest <: HList
-    ](implicit
-      key: Witness.Aux[K],
-      uw: Strict[Unwrapped.Aux[V, U]],
-      encodeV: Lazy[EncodeValue[U]],
-      encodeRest: Strict[Encode2[Rest]]
-    ) = new Encode2[FieldType[K, V] :: Rest] {
-      def fields(hl: FieldType[K, V] :: Rest) =
-        encodeRest.value.fields(hl.tail) +
-          (key.value.name -> encodeV.value.toJsonFragment(uw.value.unwrap(hl.head)))
-    }
-    implicit def encodeGeneric[T, Repr](implicit
-      gen: LabelledGeneric.Aux[T, Repr],
-      encodeRepr: Lazy[Encode2[Repr]]
-    ) = new Encode2[T] {
-      def fields(t: T) = encodeRepr.value.fields(gen.to(t))
-    }
+        K <: Symbol,
+        V,
+        U,
+        Rest <: HList
+    ](
+        implicit
+        key: Witness.Aux[K],
+        uw: Strict[Unwrapped.Aux[V, U]],
+        encodeV: Lazy[EncodeValue[U]],
+        encodeRest: Strict[Encode2[Rest]]
+    ): Encode2[FieldType[K, V] :: Rest] =
+      new Encode2[FieldType[K, V] :: Rest] {
+        def fields(hl: FieldType[K, V] :: Rest) =
+          encodeRest.value.fields(hl.tail) +
+            (key.value.name -> encodeV.value.toJsonFragment(uw.value.unwrap(hl.head)))
+      }
+    implicit def encodeGeneric[T, Repr](
+        implicit
+        gen: LabelledGeneric.Aux[T, Repr],
+        encodeRepr: Lazy[Encode2[Repr]]
+    ): Encode2[T] =
+      new Encode2[T] {
+        def fields(t: T) = encodeRepr.value.fields(gen.to(t))
+      }
   }
   // OK! Let's try again
   val encoder2 = the[Encode2[User]]

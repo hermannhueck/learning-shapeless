@@ -32,9 +32,7 @@ object Chap031RecapTypeClasses extends App {
 
   def writeCsv[A](values: List[A])(implicit encoder: CsvEncoder[A]): String =
     values
-      .map { value =>
-        encoder.encode(value).mkString(",")
-      }
+      .map { value => encoder.encode(value).mkString(",") }
       .mkString("\n")
 
   val employees: List[Employee] = List(
@@ -46,7 +44,7 @@ object Chap031RecapTypeClasses extends App {
   val encodedEmployees: String = writeCsv(employees)
   println(encodedEmployees)
 
-  println
+  println()
   println("--- Encoding IceCream instances:")
 
   case class IceCream(name: String, numCherries: Int, inCone: Boolean)
@@ -71,7 +69,7 @@ object Chap031RecapTypeClasses extends App {
   val encodedIceCreams: String = writeCsv(iceCreams)
   println(encodedIceCreams)
 
-  println
+  println()
 
   // ----------------------------------------
   prtSubTitle("3.1.1 Resolving instances")

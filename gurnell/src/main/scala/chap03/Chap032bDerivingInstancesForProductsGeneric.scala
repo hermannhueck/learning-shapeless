@@ -18,9 +18,7 @@ object Chap032bDerivingInstancesForProductsGeneric extends App {
 
   def writeCsv[A](values: List[A])(implicit encoder: CsvEncoder[A]): String =
     values
-      .map { value =>
-        encoder.encode(value).mkString(",")
-      }
+      .map { value => encoder.encode(value).mkString(",") }
       .mkString("\n")
 
   object CsvEncoder {
@@ -133,10 +131,10 @@ object Chap032bDerivingInstancesForProductsGeneric extends App {
       )
     )
   ) // is the same as:
-  println
+  println()
   println(writeCsv(iceCreams))
 
-  println
+  println()
   println(writeCsv(employees))
 
   implicit def pairEncoder[A, B](implicit aEncoder: CsvEncoder[A], bEncoder: CsvEncoder[B]): CsvEncoder[(A, B)] =
@@ -144,7 +142,7 @@ object Chap032bDerivingInstancesForProductsGeneric extends App {
       case (a, b) => aEncoder.encode(a) ++ bEncoder.encode(b)
     }
 
-  println
+  println()
   println(writeCsv(employeesWithIceCreams))
 
   // ----------------------------------------
