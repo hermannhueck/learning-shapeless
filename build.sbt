@@ -1,22 +1,22 @@
 val projectName = "learning-shapeless"
 
-val shapeless               = "com.chuusai" %% "shapeless"                 % "2.3.3"
-val scalazDerivingShapeless = "org.scalaz"  %% "scalaz-deriving-shapeless" % "2.0.0-M5"
+val shapeless               = "com.chuusai" %% "shapeless"                 % "2.3.10"
+val scalazDerivingShapeless = "org.scalaz"  %% "scalaz-deriving-shapeless" % "3.0.0-M7"
 
-val scalaTest  = "org.scalatest"  %% "scalatest"  % "3.1.1"  % Test
-val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.14.3" % Test
+val scalaTest  = "org.scalatest"  %% "scalatest"  % "3.2.16" % Test
+val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.17.0" % Test
 // val scalaTestPlusCheck = "org.scalatestplus" %% "scalatestplus-scalacheck" % "3.1.0.0-RC2"
-val scalaTestPlusCheck = "org.scalatestplus" %% "scalacheck-1-14" % "3.1.1.1"
+val scalaTestPlusCheck = "org.scalatestplus" %% "scalacheck-1-14" % "3.2.2.0"
 
 // https://github.com/ghik/silencer
-lazy val silencerVersion = "1.6.0"
+lazy val silencerVersion = "1.17.13"
 lazy val silencerLib     = "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
 lazy val silencerPlugin = compilerPlugin(
   "com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full
 )
 
 val scala212               = "2.12.11"
-val scala213               = "2.13.1"
+val scala213               = "2.13.11"
 val supportedScalaVersions = List(scala212, scala213)
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
@@ -80,7 +80,7 @@ lazy val wiki = (project in file("shapeless-wiki"))
     name := "shapeless-wiki",
     description := "Code snippets from the Shapeless wiki: https://github.com/milessabin/shapeless/wiki/Feature-overview:-shapeless-2.0.0",
     libraryDependencies ++= Seq(
-      scalazDerivingShapeless,
+      // scalazDerivingShapeless,
       scalaTestPlusCheck,
       silencerLib,
       silencerPlugin
@@ -95,7 +95,7 @@ lazy val examples = (project in file("shapeless-examples"))
     libraryDependencies ++= Seq(
       "org.scala-lang"         % "scala-compiler"            % scalaVersion.value,
       "org.scala-lang"         % "scala-reflect"             % scalaVersion.value,
-      "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
+      "org.scala-lang.modules" %% "scala-parser-combinators" % "2.3.0",
       "com.novocode"           % "junit-interface"           % "0.11" % Test
     ),
     scalacOptions += "-language:implicitConversions"
