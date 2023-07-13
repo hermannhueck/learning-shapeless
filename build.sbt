@@ -47,7 +47,7 @@ inThisBuild(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(gurnell, wiki, examples)
+  .aggregate(gurnell, wiki, examples, rowparser)
   .settings(
     name := projectName
   )
@@ -83,6 +83,13 @@ lazy val examples = (project in file("shapeless-examples"))
       "com.novocode"           % "junit-interface"           % "0.11" % Test
     ),
     scalacOptions += "-language:implicitConversions"
+  )
+
+lazy val rowparser = (project in file("rowparser"))
+// .dependsOn(util)
+  .settings(
+    name := "rowparser",
+    description := "RowParser code examples (copied from): https://meta.plasm.us/posts/2015/11/08/type-classes-and-generic-derivation/"
   )
 
 lazy val util = (project in file("util"))
