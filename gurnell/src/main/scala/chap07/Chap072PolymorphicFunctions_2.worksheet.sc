@@ -51,12 +51,17 @@ object polyTotal extends Poly1 {
 polyTotal(10)
 
 polyTotal(Option(20.0))
+polyTotal(Option.empty[Double])
+polyTotal(Option.empty[Long])
 
 polyTotal(List(1L, 2L, 3L))
+polyTotal(List.empty[Double])
+polyTotal(List.empty[Byte])
 
 // ----- Idiosyncrasies of type inference
 
 // compiles:
+val a0         = myPoly(123)
 val a          = myPoly.apply(123)
 val b1: Double = a
 
@@ -70,3 +75,4 @@ val b1: Double = a
 
 // compiles:
 val b3: Double = myPoly.apply[Int](123)
+val b4: Double = myPoly[Int](123)
