@@ -5,7 +5,7 @@ val number = 42
 trait Cherries
 
 // tagging an Int with type Cherries
-val intWithCherries = number.asInstanceOf[Int with Cherries] // 2.12.x and 2.13.x
+val numCherries0 = number.asInstanceOf[Int with Cherries] // 2.12.x and 2.13.x
 
 // tagging an Int with type "numCherries"
 val numCherries = number.asInstanceOf[Int with "numCherries"] // only 2.13.x
